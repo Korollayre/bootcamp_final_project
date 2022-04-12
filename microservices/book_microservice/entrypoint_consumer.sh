@@ -2,4 +2,4 @@
 
 set -e
 
-python3 books_backend/composites/consumer.py
+books_api consumer
