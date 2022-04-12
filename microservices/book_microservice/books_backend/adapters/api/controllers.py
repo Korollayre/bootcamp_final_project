@@ -16,34 +16,39 @@ class Books:
 
     @join_point
     def on_get_show(self, request: Request, response: Response):
-        books = self.service.get_books()
+        limit = request.get_param_as_int('limit') or 50
+        offset = request.get_param_as_int('offset') or 0
+
+        request.params['limit'] = limit
+        request.params['offset'] = offset
+
+        books = self.service.get_books(request.params)
         response.media = [
             {
                 'title': book.title,
                 'status': 'Free' if book.user_id is None else 'Busy',
                 'subtitle': book.subtitle,
-                'authors': book.authors,
-                'publisher': book.publisher,
-                'pages': book.pages,
-                'year': book.year,
                 'rating': book.rating,
-                'desc': book.desc,
                 'price': book.price,
             } for book in books
         ]
 
-    # @join_point
-    # def on_post_info(self, request: Request, response: Response):
-    #     book = self.service.get_book(**request.media)
-    #     response.media = {
-    #         'title': book.title,
-    #         'author': book.author,
-    #         'pages_count': book.pages_count,
-    #         'status': 'Free' if book.user_id is None else 'Busy',
-    #         'created_date': book.created_date.strftime("%Y-%m-%d %H:%M:%S"),
-    #         'modified_date': book.modified_date.strftime("%Y-%m-%d %H:%M:%S"),
-    #     }
-    #
+    @join_point
+    def on_post_info(self, request: Request, response: Response):
+        book = self.service.get_book(**request.media)
+        response.media = {
+            'title': book.title,
+            'status': 'Free' if book.user_id is None else 'Busy',
+            'subtitle': book.subtitle,
+            'authors': book.authors,
+            'publisher': book.publisher,
+            'pages': book.pages,
+            'year': book.year,
+            'rating': book.rating,
+            'desc': book.desc,
+            'price': book.price,
+        }
+        #
     # @join_point
     # def on_post_book(self, request: Request, response: Response):
     #     self.service.take_book(**request.media)
