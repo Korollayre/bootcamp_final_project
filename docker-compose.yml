@@ -56,24 +56,6 @@ services:
       RABBITMQ_PORT: 5672
     command:
       - "entrypoint_api.sh"
-  books_api_cli:
-    build: microservices/book_microservice
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    environment:
-      DB_DRIVER: postgresql+psycopg2
-      DB_USER: my_user
-      DB_PASSWORD: password
-      DB_HOST: books_db
-      DB_PORT: 5432
-      DB_DATABASE: books_service_db
-      RABBITMQ_USER: user
-      RABBITMQ_PASSWORD: password
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-    command:
-      - "entrypoint_cli.sh"
   books_api_consumer:
     build: microservices/book_microservice
     restart: unless-stopped
@@ -94,7 +76,7 @@ services:
     image: nginx:1.19.0-alpine
     depends_on:
       - users_api
-    #      - books_api
+      - books_api
     ports:
       - "1234:80"
     volumes:
