@@ -12,4 +12,10 @@ broker_scheme = BrokerScheme(
         routing_key='init',
         max_length=10
     ),
+    Queue(
+        'UsersQueue',
+        Exchange('APIExchange'),
+        routing_key='distribution',
+        max_length=10
+    ),
 )
