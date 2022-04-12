@@ -1,0 +1,44 @@
+### Send POST request for register new user
+POST http://localhost:1234/api/users/register
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+email=danya@mail.ru&password=password&login=SuperDanya&name=Danya
+
+### Send POST request for register new user
+POST http://localhost:1234/api/users/register
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+email=misha@mail.ru&password=password&login=MegaMisha&name=Misha
+
+### Send POST request for login
+POST http://localhost:1234/api/users/login
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+email=danya@mail.ru&password=password
+
+> {% client.global.set("auth_token", response.headers.valueOf('auth_token')); %}
+
+### Send POST request for login
+POST http://localhost:1234/api/users/login
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+email=misha@mail.ru&password=password
+
+> {% client.global.set("auth_token", response.headers.valueOf('auth_token')); %}
+
+### Send GET request for logout
+GET http://localhost:1234/api/users/logout
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+> {% client.global.set("auth_token", 'empty_token'); %}
+
+### Send GET request for check user profile with id = 1
+GET http://localhost:1234/api/users/show_user?user_id=1
+Authorization: Bearer {{auth_token}}
+Accept: application/json

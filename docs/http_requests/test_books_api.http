@@ -1,0 +1,103 @@
+### Get all books
+GET http://localhost:1234/api/books/show
+Accept: application/json
+
+### Create new book
+POST http://localhost:1234/api/books/create
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "First Book",
+  "author": "author",
+  "pages_count": 333
+}
+
+### Create new book
+POST http://localhost:1234/api/books/create
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Second Book",
+  "author": "author",
+  "pages_count": 777
+}
+
+### Create new book
+POST http://localhost:1234/api/books/create
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Third Book",
+  "author": "author",
+  "pages_count": 444
+}
+
+### Check book with id 1 info
+POST http://localhost:1234/api/books/info
+Accept: application/json
+Content-Type: application/json
+
+{
+  "book_id": 1
+}
+
+### Take book with id 1 by user with id 1
+POST http://localhost:1234/api/books/take
+Accept: application/json
+Content-Type: application/json
+
+{
+  "book_id": 1,
+  "user_id": 1
+}
+
+### Return book with id 1 by user with id 1
+POST http://localhost:1234/api/books/return
+Accept: application/json
+Content-Type: application/json
+
+{
+  "book_id": 1,
+  "user_id": 1
+}
+
+### Get all books of user with id = 1
+POST http://localhost:1234/api/books/user_check
+Accept: application/json
+Content-Type: application/json
+
+{
+  "user_id": 1
+}
+
+### Info updating for book with id 1
+POST http://localhost:1234/api/books/update
+Accept: application/json
+Content-Type: application/json
+
+{
+  "book_id": 1,
+  "title": "Title after second updating"
+}
+
+### Info modifing for book with id 2
+POST http://localhost:1234/api/books/modify
+Accept: application/json
+Content-Type: application/json
+
+{
+  "book_id": 2,
+  "title": "Title after second modifying"
+}
+
+### Deleting book with id 3
+POST http://localhost:1234/api/books/delete
+Accept: application/json
+Content-Type: application/json
+
+{
+  "book_id": 3
+}
