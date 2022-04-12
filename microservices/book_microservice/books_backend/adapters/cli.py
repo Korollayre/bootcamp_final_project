@@ -1,4 +1,4 @@
-import sys
+import threading
 
 import click
 import requests
@@ -13,9 +13,9 @@ join_point = join_points.join_point
 
 
 @join_point
-def send_request(tag: str, publisher: Publisher):
+def send_request(tag: str, publisher: Publisher, barrier):
     books_ids = []
-    print(publisher)
+
     response = requests.get(f'https://api.itbook.store/1.0/search/{tag}').json()
 
     total_books = int(response.get('total'))
@@ -42,10 +42,10 @@ def send_request(tag: str, publisher: Publisher):
             )
         )
 
-    sys.exit(0)
+    barrier.wait()
 
 
-def create_cli(publisher):
+def create_cli(publisher, MessageBus):
     @click.group()
     def cli():
         pass
@@ -53,8 +53,27 @@ def create_cli(publisher):
     @cli.command()
     @click.argument('tags', nargs=-1, type=click.UNPROCESSED)
     def init(tags):
+        barrier = threading.Barrier(len(tags) + 1)
         for tag in tags:
-            thread = Thread(target=send_request, args=(tag, publisher), daemon=False)
+            thread = Thread(target=send_request, args=(tag, publisher, barrier), daemon=False)
             thread.start()
+
+        barrier.wait()
+
+        publisher.publish(
+            Message(
+                'result',
+                {
+                    'api': 'books',
+                    'action': 'send',
+                    'data': tags,
+                }
+            )
+        )
+
+    @cli.command()
+    def consumer():
+        MessageBus.declare_scheme()
+        MessageBus.consumer.run()
 
     return cli
