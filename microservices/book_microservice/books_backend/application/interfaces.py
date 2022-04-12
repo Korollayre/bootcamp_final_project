@@ -12,7 +12,19 @@ from .entities import Books
 
 class BooksRepo(ABC):
     @abstractmethod
-    def add_instance(self, user: Books) -> Books:
+    def get_filtered_books(self, filter_query: List, order_by_query: str) -> List[Books]:
+        ...
+
+    @abstractmethod
+    def get_by_text_filter(self, field_name: str, filter_flag: str, filter_value: str):
+        ...
+
+    @abstractmethod
+    def get_by_numbers_filter(self, field_name: str, filter_flag: str, filter_value: str):
+        ...
+
+    @abstractmethod
+    def get_books_for_distribution(self, filter_value: str) -> List[Books]:
         ...
 
     @abstractmethod
@@ -20,13 +32,9 @@ class BooksRepo(ABC):
         ...
 
     @abstractmethod
-    def get_by_title(self, title_for_check: str) -> Optional[Books]:
-        ...
-
-    @abstractmethod
     def get_by_user(self, user_id: int) -> List[Books]:
         ...
 
     @abstractmethod
-    def get_all(self) -> List[Books]:
+    def add_instance(self, book: Books):
         ...
