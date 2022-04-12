@@ -26,10 +26,10 @@ class DB:
     books_repo = database.repositories.BooksRepo(context=context)
 
 
-class MessageBus:
+class PublisherMessageBus:
     connection = Connection(Settings.message_bus.BROKER_URL)
 
-    publisher = KombuPublisher(
+    book_publisher = KombuPublisher(
         connection=connection,
         scheme=message_bus.broker_scheme,
         messages_params={
@@ -40,14 +40,37 @@ class MessageBus:
         },
     )
 
+    user_publisher = KombuPublisher(
+        connection=connection,
+        scheme=message_bus.broker_scheme,
+        messages_params={
+            'result': {
+                'exchange': 'APIExchange',
+                'routing_key': 'distribution',
+            }
+        },
+    )
+
 
 class Application:
-    books = services.BooksManager(books_repo=DB.books_repo)
+    books = services.BooksManager(
+        books_repo=DB.books_repo,
+        user_publisher=PublisherMessageBus.user_publisher,
+    )
+
+
+class ConsumerMessageBus:
+    consumer = message_bus.create_consumer(PublisherMessageBus.connection, Application.books)
+
+    @staticmethod
+    def declare_scheme():
+        message_bus.broker_scheme.declare(PublisherMessageBus.connection)
 
 
 class Aspects:
     services.join_points.join(
-        MessageBus.publisher,
+        PublisherMessageBus.book_publisher,
+        PublisherMessageBus.user_publisher,
         DB.context,
     )
     api.join_points.join(DB.context)
