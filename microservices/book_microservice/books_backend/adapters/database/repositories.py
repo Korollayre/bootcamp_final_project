@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import (
     List,
     Optional,
@@ -40,13 +41,9 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         }
         return filters.get(filter_flag)
 
-    def get_books_for_distribution(self, filter_value: str) -> List[Books]:
-        return self.session.query(Books).filter(
-            and_(
-                Books.title.like(f'%{filter_value}%'),
-                Books.subtitle.like(f'%{filter_value}%'),
-                Books.desc.like(f'%{filter_value}%'),
-            )).order_by(desc(Books.rating, Books.year)).limit(3).all()
+    def get_books_for_distribution(self, timestamp: datetime) -> List[Books]:
+        return self.session.query(Books).filter_by(created_date=timestamp).order_by(
+            desc(Books.rating), desc(Books.year)).limit(3).all()
 
     def get_by_id(self, book_id: int) -> Optional[Books]:
         return self.session.query(Books).filter_by(isbn13=book_id).one_or_none()
