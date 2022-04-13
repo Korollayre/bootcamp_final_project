@@ -28,6 +28,21 @@ class UsersInfo(DTO):
 @component
 class UsersManager:
     users_repo: interfaces.UsersRepo
+    mail_sender: interfaces.MailSender
+
+    @join_point
+    @validate_arguments
+    def parse_broker_message(self, api: str, action: str, data: dict):
+        if action == 'send':
+            users = self.users_repo.get_all()
+            for tag in data.keys():
+                books = data.get(tag)
+                for user in users:
+                    self.mail_sender.send(
+                        user.email,
+                        f'The best selection of {tag} books just for you!',
+                        books,
+                    )
 
     @join_point
     @validate_with_dto
