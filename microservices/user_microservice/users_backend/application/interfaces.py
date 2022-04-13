@@ -30,3 +30,9 @@ class UsersRepo(ABC):
     @abstractmethod
     def login(self, user_mail: str, user_password: str) -> Optional[Users]:
         ...
+
+
+class MailSender(ABC):
+    @abstractmethod
+    def send(self, user: str, title: str, data: str):
+        ...
