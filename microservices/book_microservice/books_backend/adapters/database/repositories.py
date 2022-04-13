@@ -4,7 +4,8 @@ from typing import (
 )
 from sqlalchemy import (
     and_,
-    asc
+    asc,
+    desc,
 )
 
 from evraz.classic.components import component
@@ -45,7 +46,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
                 Books.title.like(f'%{filter_value}%'),
                 Books.subtitle.like(f'%{filter_value}%'),
                 Books.desc.like(f'%{filter_value}%'),
-            )).order_by(asc(Books.rating, Books.year)).limit(3).all()
+            )).order_by(desc(Books.rating, Books.year)).limit(3).all()
 
     def get_by_id(self, book_id: int) -> Optional[Books]:
         return self.session.query(Books).filter_by(isbn13=book_id).one_or_none()
