@@ -1,3 +1,5 @@
+import logging
+
 from kombu import Connection
 from sqlalchemy import create_engine
 
@@ -6,6 +8,8 @@ from evraz.classic.sql_storage import TransactionContext
 from users_backend.adapters import (
     database,
     message_bus,
+    mail_sending,
+    log,
 )
 from users_backend.application import services
 
@@ -24,9 +28,18 @@ class DB:
     users_repo = database.repositories.UsersRepo(context=context)
 
 
+class Logger:
+    logger = logging.getLogger('user_logger')
+
+
+class MailSending:
+    sender = mail_sending.StreamMailSender(logger=Logger.logger)
+
+
 class Application:
     users = services.UsersManager(
         users_repo=DB.users_repo,
+        mail_sender=MailSending.sender,
     )
 
 
