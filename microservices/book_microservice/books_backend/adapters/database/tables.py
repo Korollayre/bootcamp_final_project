@@ -27,6 +27,7 @@ books_table = Table(
     Column('desc', String(500)),
     Column('price', Float),
     Column('user_id', Integer, default=None),
+    Column('created_date', DateTime, nullable=False),
     Column('booked_date', DateTime, default=None),
     Column('expire_date', DateTime, default=None),
     Column('bought', Boolean, default=False),

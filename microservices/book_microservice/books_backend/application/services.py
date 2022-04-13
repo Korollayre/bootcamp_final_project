@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import (
     List,
-    Optional, Union,
+    Optional,
 )
 
 from evraz.classic.app import (
@@ -44,6 +44,7 @@ class BooksInfo(DTO):
     desc: str
     price: float
     user_id: Optional[int] = None
+    created_date: Optional[datetime] = None
     booked_date: Optional[datetime] = None
     expire_date: Optional[datetime] = None
     bought: Optional[bool] = None
@@ -56,7 +57,9 @@ class BooksManager:
 
     @join_point
     @validate_arguments
-    def parse_broker_message(self, api: str, action: str, data: Union[dict, tuple]):
+    def parse_broker_message(self, api: str, action: str, data: dict):
+        with open('books.txt', 'w') as file:
+            file.write(f'{action}, {data}')
         if action == 'create':
 
             data['price'] = float(data.get('price')[1:])
@@ -66,20 +69,42 @@ class BooksManager:
             self.books_repo.add_instance(new_book)
 
         elif action == 'send':
+
+            print('send to user')
+
             mail_data = {}
 
-            for tag in data:
+            for tag in data.get('tags'):
+                books = self.books_repo.get_books_for_distribution(data.get('time'))
+                mail_data[f'{tag}'] = [
+                    {
+                        'title': book.title,
+                        'status': 'Free' if book.user_id is None else 'Busy',
+                        'subtitle': book.subtitle,
+                        'rating': book.rating,
+                        'year': book.year,
+                        'price': book.price,
+                    } for book in books
+                ]
 
-                mail_data[f'{tag}'] = None
-                pass
+            self.user_publisher.publish(
+                Message(
+                    'result',
+                    {
+                        'api': 'books',
+                        'action': 'send',
+                        'data': mail_data,
+                    }
+                )
+            )
 
     @join_point
     @validate_arguments
     def get_book(self, book_id: int) -> Books:
         book = self.books_repo.get_by_id(book_id)
 
-        if book is None:
-            raise NoBook(id=book_id)
+        # if book is None:
+        #     raise NoBook(id=book_id)
 
         return book
 

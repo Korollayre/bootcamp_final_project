@@ -17,6 +17,7 @@ class Books:
     desc: str
     price: float
     user_id: Optional[int] = None
+    created_date: Optional[datetime] = None
     booked_date: Optional[datetime] = None
     expire_date: Optional[datetime] = None
     bought: Optional[bool] = None
