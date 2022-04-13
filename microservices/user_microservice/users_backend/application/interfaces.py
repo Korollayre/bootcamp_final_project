@@ -1,10 +1,20 @@
-from abc import ABC, abstractmethod
-from typing import Optional
+from abc import (
+    ABC,
+    abstractmethod,
+)
+from typing import (
+    Optional,
+    List,
+)
 
 from .entities import Users
 
 
 class UsersRepo(ABC):
+    @abstractmethod
+    def get_all(self) -> List[Users]:
+        ...
+
     @abstractmethod
     def get_by_id(self, user_id: int) -> Optional[Users]:
         ...
