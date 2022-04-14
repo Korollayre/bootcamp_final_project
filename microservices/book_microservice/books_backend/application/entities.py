@@ -16,8 +16,14 @@ class Books:
     rating: int
     desc: str
     price: float
-    user_id: Optional[int] = None
     created_date: Optional[datetime] = None
-    booked_date: Optional[datetime] = None
     expire_date: Optional[datetime] = None
     bought: Optional[bool] = None
+
+
+@attr.dataclass
+class BooksHistory:
+    book_id: Books
+    user_id: int
+    created_date: Optional[datetime] = None
+    id: Optional[int] = None
