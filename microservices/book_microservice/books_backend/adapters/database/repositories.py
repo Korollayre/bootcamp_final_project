@@ -25,7 +25,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
         if order_by_field is None:
             return self.session.query(Books).filter(and_(*filter_query)).all()
         else:
-            return self.session.query(Books).filter(and_(*filter_query)).order_by(
+            return self.session.query(Books).filter(and_(*filter_query, Books.bought is False)).order_by(
                 asc(getattr(Books, order_by_field))).all()
 
     def get_by_text_filter(self, field_name: str, filter_flag: str, filter_value: str):
@@ -66,9 +66,8 @@ class HistoryRepo(BaseRepository, interfaces.HistoryRepo):
         return self.session.query(BooksHistory).filter_by(user_id=user_id).all()
 
     def get_by_ids(self, book_id: int, user_id: int) -> Optional[BooksHistory]:
-        return self.session.query(BooksHistory).filter_by(
-            book_id=book_id,
-            user_id=user_id).order_by(desc(BooksHistory.created_date)).limit(1).one_or_none()
+        return self.session.query(BooksHistory).filter_by(book_id=book_id, user_id=user_id).order_by(
+            desc(BooksHistory.created_date)).limit(1).one_or_none()
 
     def add_instance(self, new_row: BooksHistory):
         self.session.add(new_row)
