@@ -32,7 +32,7 @@ books_table = Table(
 )
 
 history_table = Table(
-    'books_history',
+    'history',
     metadata,
     Column('id', Integer, primary_key=True, autoincrement=True),
     Column('book_id', BigInteger, ForeignKey('books.isbn13')),
