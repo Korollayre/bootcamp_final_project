@@ -1,0 +1,49 @@
+@startuml
+
+header Финальный проект по итогу обучения
+title Схема БД
+
+hide circle
+
+entity Books {
+    * **isbn13**  :  int <<PK>>
+    __
+    * **title**  :  text
+    __
+    * **subtitle**  : text
+    __
+    * **authors**  :  text
+    __
+    * **publisher**  :  text
+    __
+    * **pages**  :  int
+    __
+    * **year**  :  int
+    __
+    * **rating**  :  int
+    __
+    * **desc**  :  text
+    __
+    * **price**  :  float
+    __
+    * **created_date**  :  date
+    __
+    **expire_date**  :  date
+    __
+    **bought**  :  bool
+}
+
+entity HistoryTable {
+    * **id**  :  int <<PK>>
+    __
+    * **book_id**  :  int <<FK>>
+    __
+    * **user_id**  :  int
+    __
+    * **creation_date**  : date
+}
+
+Books ||--o{ HistoryTable
+
+@enduml
+
