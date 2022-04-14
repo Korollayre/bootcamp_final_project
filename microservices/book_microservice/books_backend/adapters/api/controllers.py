@@ -113,6 +113,30 @@ class Books:
 
     @join_point
     @authenticate
+    def on_post_bought(self, request: Request, response: Response):
+        user_id = get_user_id_from_token(request)
+
+        request.media['user_id'] = user_id
+
+        books = self.service.check_bought_book(**request.media)
+
+        if len(books) == 0:
+            response.media = {
+                'message': 'No bought books'
+            }
+        else:
+            response.media = [
+                {
+                'id': book.isbn13,
+                'title': book.title,
+                'subtitle': book.subtitle,
+                'rating': book.rating,
+                'price': book.price,
+            } for book in books
+            ]
+
+    @join_point
+    @authenticate
     def on_post_buy(self, request: Request, response: Response):
         user_id = get_user_id_from_token(request)
 
@@ -121,7 +145,7 @@ class Books:
         self.service.buy_book(**request.media)
 
         response.media = {
-            'message': 'Book info successfully update'
+            'message': 'Book successfully bought'
         }
 
     @join_point
