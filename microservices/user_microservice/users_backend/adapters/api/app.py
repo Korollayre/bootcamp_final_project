@@ -3,7 +3,10 @@ from evraz.classic.http_auth import Authenticator
 
 from users_backend.application import services
 
-from . import auth, controllers
+from . import (
+    auth,
+    controllers,
+)
 
 
 def create_app(
@@ -16,6 +19,11 @@ def create_app(
 
     app = App(prefix='/api')
 
-    app.register(controllers.Users(authenticator=authenticator, service=users_service))
+    app.register(
+        controllers.Users(
+            authenticator=authenticator,
+            service=users_service,
+        )
+    )
 
     return app
