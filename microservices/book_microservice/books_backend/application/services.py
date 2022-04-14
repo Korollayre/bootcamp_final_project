@@ -1,4 +1,7 @@
-from datetime import datetime
+from datetime import (
+    datetime,
+    timedelta
+)
 from typing import (
     List,
     Optional,
@@ -17,13 +20,18 @@ from evraz.classic.messaging import (
 from pydantic import validate_arguments
 
 from .errors import (
-    # NoBook,
+    NoBook,
     # BookExists,
     # NoRights,
-    # BookedBook,
+    NoBookedBook,
+    BookedBook,
+    BookedLimit,
     FilterKeyError,
 )
-from .entities import Books
+from .entities import (
+    Books,
+    BooksHistory,
+)
 
 from . import interfaces
 
@@ -40,19 +48,39 @@ class BooksInfo(DTO):
     pages: int
     year: int
     rating: int
-    pages: int
     desc: str
     price: float
-    user_id: Optional[int] = None
-    created_date: Optional[datetime] = None
-    booked_date: Optional[datetime] = None
+    created_date: datetime
     expire_date: Optional[datetime] = None
     bought: Optional[bool] = None
+
+
+class BooksInfoForChange(DTO):
+    isbn13: int
+    title: str
+    subtitle: str
+    authors: str
+    publisher: str
+    pages: int
+    year: int
+    rating: int
+    desc: str
+    price: float
+    created_date: datetime
+    expire_date: Optional[datetime] = None
+    bought: Optional[bool] = None
+
+
+class BooksHistoryInfo(DTO):
+    book_id: int
+    user_id: int
+    created_date: datetime
 
 
 @component
 class BooksManager:
     books_repo: interfaces.BooksRepo
+    history_repo: interfaces.HistoryRepo
     user_publisher: Publisher
 
     @join_point
@@ -61,6 +89,10 @@ class BooksManager:
         with open('books.txt', 'w') as file:
             file.write(f'{action}, {data}')
         if action == 'create':
+            book_check = self.books_repo.get_by_id(data['isbn13'])
+
+            if book_check is not None:
+                return
 
             data['price'] = float(data.get('price')[1:])
             book_info = BooksInfo(**data)
@@ -74,18 +106,30 @@ class BooksManager:
 
             mail_data = {}
 
-            for tag in data.get('tags'):
-                books = self.books_repo.get_books_for_distribution(data.get('time'))
+            tags = data.get('tags')
+            times = data.get('timestamps')
+
+            tags_timestamps = list(zip(tags, times))
+
+            for tag, timestamp in tags_timestamps:
+                books = self.books_repo.get_books_for_distribution(timestamp)
+
+                if len(books) == 0:
+                    continue
+
                 mail_data[f'{tag}'] = [
                     {
+                        'id': book.isbn13,
                         'title': book.title,
-                        'status': 'Free' if book.user_id is None else 'Busy',
                         'subtitle': book.subtitle,
                         'rating': book.rating,
                         'year': book.year,
                         'price': book.price,
                     } for book in books
                 ]
+
+            if len(mail_data.keys()) == 0:
+                return
 
             self.user_publisher.publish(
                 Message(
@@ -103,8 +147,8 @@ class BooksManager:
     def get_book(self, book_id: int) -> Books:
         book = self.books_repo.get_by_id(book_id)
 
-        # if book is None:
-        #     raise NoBook(id=book_id)
+        if book is None:
+            raise NoBook(id=book_id)
 
         return book
 
@@ -170,115 +214,94 @@ class BooksManager:
 
         return filter_query
 
-    # @join_point
-    # @validate_arguments
-    # def take_book(self, book_id: int, user_id: int):
-    #     book = self.get_book(book_id)
-    #
-    #     if book.user_id is not None:
-    #         raise BookedBook(book_id=book_id)
-    #
-    #     book_info = BooksInfoForChange(
-    #         book_id=book_id,
-    #         title=book.title,
-    #         pages_count=book.pages_count,
-    #         author=book.author,
-    #         user_id=user_id,
-    #     )
-    #
-    #     book_info.populate_obj(book)
-    #
-    #     book_info.book_id = book_id
-    #
-    #     self.publisher.plan(
-    #         Message(
-    #             'result',
-    #             {
-    #                 'api': 'books',
-    #                 'action': 'take',
-    #                 'data': book_info.dict(),
-    #             }
-    #         )
-    #     )
-    #
-    # @join_point
-    # @validate_arguments
-    # def return_book(self, book_id: int, user_id: int):
-    #     book = self.get_book(book_id)
-    #
-    #     if book.user_id != user_id:
-    #         raise NoRights(user_id=user_id, book_id=book_id)
-    #
-    #     book_info = BooksInfoForChange(
-    #         book_id=book_id,
-    #         title=book.title,
-    #         pages_count=book.pages_count,
-    #         author=book.author,
-    #         user_id=None,
-    #     )
-    #
-    #     book_info.populate_obj(book)
-    #
-    #     book_info.book_id = book_id
-    #
-    #     self.publisher.plan(
-    #         Message(
-    #             'result',
-    #             {
-    #                 'api': 'books',
-    #                 'action': 'return',
-    #                 'data': book_info.dict(),
-    #             }
-    #         )
-    #     )
-    #
-    # @join_point
-    # @validate_arguments
-    # def check_by_user(self, user_id: int) -> List[Books]:
-    #     return self.books_repo.get_by_user(user_id)
-    #
-    # @join_point
-    # @validate_with_dto
-    # def update_book(self, book_info: BooksInfoForChange):
-    #     if book_info.title is not None:
-    #         self.check_title(book_info.title)
-    #
-    #     book = self.get_book(book_info.book_id)
-    #
-    #     book.modified_date = datetime.now()
-    #     if book_info.title is not None:
-    #         book.title = book_info.title
-    #     book.author = book_info.author
-    #     book.pages_count = book_info.pages_count
-    #
-    #     book_info.populate_obj(book)
-    #
-    # @join_point
-    # @validate_with_dto
-    # def partially_update_book(self, book_info: BooksInfoForChange):
-    #     if book_info.title is not None:
-    #         self.check_title(book_info.title)
-    #
-    #     book = self.get_book(book_info.book_id)
-    #
-    #     book.modified_date = datetime.now()
-    #
-    #     book_info.populate_obj(book)
-    #
-    # @join_point
-    # @validate_arguments
-    # def delete_book(self, book_id: int):
-    #     book = self.get_book(book_id)
-    #
-    #     self.books_repo.delete_instance(book)
-    #
-    #     self.publisher.plan(
-    #         Message(
-    #             'result',
-    #             {
-    #                 'api': 'books',
-    #                 'action': 'delete',
-    #                 'data': {'book_id': book_id},
-    #             }
-    #         )
-    #     )
+    @join_point
+    @validate_arguments
+    def take_book(self, book_id: int, user_id: int, day_to_expire: Optional[int]):
+        book = self.get_book(book_id)
+
+        if book.expire_date is not None and book.expire_date > datetime.today():
+            raise BookedBook(book_id=book_id)
+
+        book_history = self.check_by_user(user_id)
+        for row in book_history:
+            if row.book.expire_date is None:
+                break
+            if row.book.expire_date > datetime.today():
+                raise BookedLimit()
+
+        history_info = BooksHistoryInfo(
+            book_id=book_id,
+            user_id=user_id,
+            created_date=datetime.now(),
+        )
+
+        new_history_row = history_info.create_obj(BooksHistory)
+
+        self.history_repo.add_instance(new_history_row)
+
+        new_expire_date = datetime.today() + timedelta(day_to_expire if day_to_expire <= 7 else 7)
+
+        book_info = BooksInfoForChange(
+            isbn13=book.isbn13,
+            title=book.title,
+            subtitle=book.subtitle,
+            authors=book.authors,
+            publisher=book.publisher,
+            pages=book.pages,
+            year=book.year,
+            rating=book.rating,
+            desc=book.desc,
+            price=book.price,
+            created_date=book.created_date,
+            expire_date=new_expire_date,
+            bought=book.bought,
+        )
+
+        book_info.populate_obj(book)
+
+    @join_point
+    @validate_arguments
+    def return_book(self, book_id: int, user_id: int):
+        book = self.get_book(book_id)
+
+        book_history = self.history_repo.get_by_ids(book_id=book_id, user_id=user_id)
+
+        if book_history is None:
+            raise NoBookedBook(user_id=user_id, book_id=book_id)
+
+        if book_history.book.expire_date < datetime.today():
+            return
+
+        book_info = BooksInfoForChange(
+            isbn13=book.isbn13,
+            title=book.title,
+            subtitle=book.subtitle,
+            authors=book.authors,
+            publisher=book.publisher,
+            pages=book.pages,
+            year=book.year,
+            rating=book.rating,
+            desc=book.desc,
+            price=book.price,
+            created_date=book.created_date,
+            expire_date=None,
+            bought=book.bought,
+        )
+
+        book_info.populate_obj(book)
+
+    @join_point
+    @validate_arguments
+    def check_by_user(self, user_id: int) -> List[BooksHistory]:
+        books = self.history_repo.get_by_user_id(user_id)
+
+        return books
+
+    @join_point
+    @validate_arguments
+    def check_active_book(self, user_id: int) -> Optional[Books]:
+        history_rows = self.history_repo.get_by_user_id(user_id)
+        for row in history_rows:
+            if row.book.expire_date is not None:
+                if row.book.expire_date > datetime.today():
+                    return row.book
