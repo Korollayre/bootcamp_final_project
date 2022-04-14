@@ -90,48 +90,7 @@ class Books:
         }
 
     @join_point
-    def on_post_buy(self, request: Request, response: Response):
-        user_id = get_user_id_from_token(request)
-
-        request.media['user_id'] = user_id
-
-        self.service.update_book(**request.media)
-
-        response.media = {
-            'message': 'Book info successfully update'
-        }
-
-    @join_point
-    def on_post_return(self, request: Request, response: Response):
-        user_id = get_user_id_from_token(request)
-
-        request.media['user_id'] = user_id
-
-        self.service.return_book(**request.media)
-
-        response.media = {
-            'message': 'Book successfully returned'
-        }
-
-    @join_point
-    def on_post_user_check(self, request: Request, response: Response):
-        user_id = get_user_id_from_token(request)
-
-        request.media['user_id'] = user_id
-
-        history_rows = self.service.check_by_user(**request.media)
-
-        response.media = [
-            {
-                'id': row.book.isbn13,
-                'title': row.book.title,
-                'subtitle': row.book.subtitle,
-                'rating': row.book.rating,
-                'price': row.book.price,
-            } for row in history_rows
-        ]
-
-    @join_point
+    @authenticate
     def on_post_active(self, request: Request, response: Response):
         user_id = get_user_id_from_token(request)
 
@@ -151,3 +110,48 @@ class Books:
                 'rating': book.rating,
                 'price': book.price,
             }
+
+    @join_point
+    @authenticate
+    def on_post_buy(self, request: Request, response: Response):
+        user_id = get_user_id_from_token(request)
+
+        request.media['user_id'] = user_id
+
+        self.service.update_book(**request.media)
+
+        response.media = {
+            'message': 'Book info successfully update'
+        }
+
+    @join_point
+    @authenticate
+    def on_post_return(self, request: Request, response: Response):
+        user_id = get_user_id_from_token(request)
+
+        request.media['user_id'] = user_id
+
+        self.service.return_book(**request.media)
+
+        response.media = {
+            'message': 'Book successfully returned'
+        }
+
+    @join_point
+    @authenticate
+    def on_post_user_check(self, request: Request, response: Response):
+        user_id = get_user_id_from_token(request)
+
+        request.media['user_id'] = user_id
+
+        history_rows = self.service.check_by_user(**request.media)
+
+        response.media = [
+            {
+                'id': row.book.isbn13,
+                'title': row.book.title,
+                'subtitle': row.book.subtitle,
+                'rating': row.book.rating,
+                'price': row.book.price,
+            } for row in history_rows
+        ]
