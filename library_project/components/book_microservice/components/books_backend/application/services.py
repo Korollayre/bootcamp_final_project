@@ -120,31 +120,26 @@ class BooksManager:
         header_filter = query.get('title')
         if header_filter is not None:
             flag, value = self.parse_filter_values(header_filter)
-            filter_query.append(
-                self.filter_by_text_filters('title', flag, value))
+            filter_query.append(self.filter_by_text_filters('title', flag, value))
 
         header_filter = query.get('authors')
         if header_filter is not None:
             flag, value = self.parse_filter_values(header_filter)
-            filter_query.append(
-                self.filter_by_text_filters('authors', flag, value))
+            filter_query.append(self.filter_by_text_filters('authors', flag, value))
 
         text_filter = query.get('publisher')
         if text_filter is not None:
             flag, value = self.parse_filter_values(text_filter)
-            filter_query.append(
-                self.filter_by_text_filters('publisher', flag, value))
+            filter_query.append(self.filter_by_text_filters('publisher', flag, value))
 
         likes_filters = query.get('price')
         if likes_filters is not None:
             flag, value = self.parse_filter_values(likes_filters)
-            filter_query.append(
-                self.filter_by_numbers_filters('price', flag, value))
+            filter_query.append(self.filter_by_numbers_filters('price', flag, value))
 
         order_by_field = query.get('order_by')
         if order_by_field in ('price', 'pages', None):
-            books = self.books_repo.get_filtered_books(filter_query,
-                                                       order_by_field)
+            books = self.books_repo.get_filtered_books(filter_query, order_by_field)
         else:
             raise FilterKeyError()
 
@@ -157,11 +152,8 @@ class BooksManager:
     def parse_filter_values(filter_value: str) -> List[str]:
         return filter_value.split(':')
 
-    def filter_by_text_filters(self, field_name: str, filter_flag: str,
-                               filter_value: str):
-        filter_query = self.books_repo.get_by_text_filter(field_name,
-                                                          filter_flag,
-                                                          filter_value)
+    def filter_by_text_filters(self, field_name: str, filter_flag: str, filter_value: str):
+        filter_query = self.books_repo.get_by_text_filter(field_name, filter_flag, filter_value)
 
         if filter_query is None:
             raise FilterKeyError()
@@ -170,9 +162,7 @@ class BooksManager:
 
     def filter_by_numbers_filters(self, field_name: str, filter_flag: str,
                                   filter_value: str):
-        filter_query = self.books_repo.get_by_numbers_filter(field_name,
-                                                             filter_flag,
-                                                             filter_value)
+        filter_query = self.books_repo.get_by_numbers_filter(field_name, filter_flag, filter_value)
 
         if filter_query is None:
             raise FilterKeyError()
@@ -191,8 +181,7 @@ class BooksManager:
 
     @join_point
     @validate_arguments
-    def take_book(self, book_id: int, user_id: int,
-                  day_to_expire: Optional[int]):
+    def take_book(self, book_id: int, user_id: int, day_to_expire: Optional[int]):
         book = self.get_book(book_id)
 
         if book.expire_date is not None and book.expire_date > datetime.today():
@@ -218,8 +207,7 @@ class BooksManager:
 
         self.history_repo.add_instance(new_history_row)
 
-        new_expire_date = datetime.today() + timedelta(
-            day_to_expire if day_to_expire <= 7 else 7)
+        new_expire_date = datetime.today() + timedelta(day_to_expire if day_to_expire <= 7 else 7)
 
         book_info = BooksInfoForChange(
             isbn13=book.isbn13,
@@ -290,8 +278,7 @@ class BooksManager:
     def return_book(self, book_id: int, user_id: int):
         book = self.get_book(book_id)
 
-        book_history = self.history_repo.get_by_ids(book_id=book_id,
-                                                    user_id=user_id)
+        book_history = self.history_repo.get_by_ids(book_id=book_id, user_id=user_id)
 
         if book_history is None:
             raise NoBookedBook(user_id=user_id, book_id=book_id)
