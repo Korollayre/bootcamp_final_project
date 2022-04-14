@@ -18,7 +18,7 @@ services:
       POSTGRES_PASSWORD: password
   users_api:
     build:
-      context: ./library_project
+      context: ./library_project/user_microservice
       dockerfile: deployment/users_backend/Dockerfile
     depends_on:
       - users_db
@@ -35,7 +35,7 @@ services:
       - "entrypoint_api.sh"
   users_api_consumer:
     build:
-      context: ./library_project
+      context: ./library_project/user_microservice
       dockerfile: deployment/users_backend/Dockerfile
     depends_on:
       - users_db
@@ -63,7 +63,7 @@ services:
       POSTGRES_PASSWORD: password
   books_api:
     build:
-      context: ./library_project
+      context: ./library_project/book_microservice
       dockerfile: deployment/books_backend/Dockerfile
     restart: unless-stopped
     depends_on:
@@ -84,7 +84,7 @@ services:
       - "entrypoint_api.sh"
   books_api_consumer:
     build:
-      context: ./library_project
+      context: ./library_project/book_microservice
       dockerfile: deployment/books_backend/Dockerfile
     restart: unless-stopped
     environment:
@@ -108,6 +108,6 @@ services:
     ports:
       - "1234:80"
     volumes:
-      - ./library_project/deployment/nginx:/etc/nginx/conf.d
+      - ./library_project/nginx:/etc/nginx/conf.d
 volumes:
   rabbitmq_data:

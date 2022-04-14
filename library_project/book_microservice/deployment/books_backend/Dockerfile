@@ -4,8 +4,8 @@ WORKDIR /api
 
 ENV PATH=$PATH:/usr/bin
 
-COPY ./components/book_microservice/setup.py .
-COPY ./components/book_microservice/setup.cfg .
+COPY ./components/setup.py .
+COPY ./components/setup.cfg .
 
 RUN pip install --no-cache-dir --upgrade -e '.[dev]'
 
@@ -17,4 +17,4 @@ COPY ./deployment/books_backend/entrypoint_*.sh /usr/bin/
 
 RUN chmod +x /usr/bin/entrypoint_*.sh
 
-COPY ./components/book_microservice .
+COPY ./components .
