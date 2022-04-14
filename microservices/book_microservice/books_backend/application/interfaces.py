@@ -7,7 +7,10 @@ from typing import (
     Optional,
 )
 
-from .entities import Books
+from .entities import (
+    Books,
+    BooksHistory,
+)
 
 
 class BooksRepo(ABC):
@@ -37,4 +40,18 @@ class BooksRepo(ABC):
 
     @abstractmethod
     def add_instance(self, book: Books):
+        ...
+
+
+class HistoryRepo(ABC):
+    @abstractmethod
+    def get_by_user_id(self, user_id: int) -> List[BooksHistory]:
+        ...
+
+    @abstractmethod
+    def get_by_ids(self, book_id: int, user_id: int) -> Optional[BooksHistory]:
+        ...
+
+    @abstractmethod
+    def add_instance(self, new_row: BooksHistory):
         ...
