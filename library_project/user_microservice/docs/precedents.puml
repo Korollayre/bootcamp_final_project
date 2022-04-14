@@ -1,0 +1,24 @@
+@startuml
+
+header Финальный проект по итогу обучения
+title Диаграмма прецедентов
+
+left to right direction
+
+rectangle "Аккаунт" {
+  usecase "Зарегистрироваться" as register
+  usecase "Войти в аккаунт" as log_in
+  usecase "Выйти из аккаунта" as log_out
+  usecase "Посмотреть профиль" as check_profile
+}
+
+actor "Зарегистрированный пользователь" as user
+
+log_in -- user
+log_out -- user
+check_profile -- user
+
+actor "Незарегистрированный пользователь" as unknown_user
+unknown_user -- register
+
+@enduml
