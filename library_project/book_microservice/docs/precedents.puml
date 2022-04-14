@@ -1,0 +1,34 @@
+@startuml
+
+header Финальный проект по итогу обучения
+title Диаграмма прецедентов
+
+left to right direction
+
+rectangle "Библиотека" {
+  usecase "Посмотреть список книг" as check_books
+  usecase "Посмотреть полную информацию книги" as check_book_info
+  usecase "Зарезервировать книгу" as book_book
+  usecase "Купить книгу" as buy_book
+  usecase "Вернуть книгу" as return_book
+  usecase "Посмотреть историю брони" as check_booking_history
+  usecase "Посмотреть активную книгу" as check_active_book
+  usecase "Посмотреть купленные книги" as check_bought_book
+}
+
+actor "Зарегистрированный пользователь" as user
+
+check_books -- user
+check_book_info -- user
+book_book -- user
+buy_book -- user
+return_book -- user
+check_booking_history -- user
+check_active_book -- user
+check_bought_book -- user
+
+actor "Незарегистрированный пользователь" as unknown_user
+unknown_user -- check_books
+unknown_user -- check_book_info
+
+@enduml
