@@ -46,7 +46,7 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
 
     def get_books_for_distribution(self, timestamp: datetime) -> List[Books]:
         return self.session.query(Books).filter_by(created_date=timestamp).order_by(
-            desc(Books.rating), desc(Books.year)).limit(3).all()
+            desc(Books.rating), asc(Books.year)).limit(3).all()
 
     def get_by_id(self, book_id: int) -> Optional[Books]:
         return self.session.query(Books).filter_by(isbn13=book_id).one_or_none()
