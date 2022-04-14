@@ -7,10 +7,6 @@ from typing import (
     Optional,
 )
 
-from evraz.classic.app import (
-    DTO,
-    validate_with_dto,
-)
 from evraz.classic.aspects import PointCut
 from evraz.classic.components import component
 from evraz.classic.messaging import (
@@ -19,10 +15,15 @@ from evraz.classic.messaging import (
 )
 from pydantic import validate_arguments
 
+from .dto import (
+    BooksInfo,
+    BooksInfoForChange,
+    BooksHistoryInfo,
+)
 from .errors import (
     NoBook,
-    # BookExists,
-    # NoRights,
+    NoActiveBook,
+    BoughtBook,
     NoBookedBook,
     BookedBook,
     BookedLimit,
@@ -37,44 +38,6 @@ from . import interfaces
 
 join_points = PointCut()
 join_point = join_points.join_point
-
-
-class BooksInfo(DTO):
-    isbn13: int
-    title: str
-    subtitle: str
-    authors: str
-    publisher: str
-    pages: int
-    year: int
-    rating: int
-    desc: str
-    price: float
-    created_date: datetime
-    expire_date: Optional[datetime] = None
-    bought: Optional[bool] = None
-
-
-class BooksInfoForChange(DTO):
-    isbn13: int
-    title: str
-    subtitle: str
-    authors: str
-    publisher: str
-    pages: int
-    year: int
-    rating: int
-    desc: str
-    price: float
-    created_date: datetime
-    expire_date: Optional[datetime] = None
-    bought: Optional[bool] = None
-
-
-class BooksHistoryInfo(DTO):
-    book_id: int
-    user_id: int
-    created_date: datetime
 
 
 @component
@@ -143,16 +106,6 @@ class BooksManager:
             )
 
     @join_point
-    @validate_arguments
-    def get_book(self, book_id: int) -> Books:
-        book = self.books_repo.get_by_id(book_id)
-
-        if book is None:
-            raise NoBook(id=book_id)
-
-        return book
-
-    @join_point
     def get_books(self, query: dict) -> List[Books]:
         books = self.filter_books(query)
 
@@ -216,11 +169,24 @@ class BooksManager:
 
     @join_point
     @validate_arguments
+    def get_book(self, book_id: int) -> Books:
+        book = self.books_repo.get_by_id(book_id)
+
+        if book is None:
+            raise NoBook(id=book_id)
+
+        return book
+
+    @join_point
+    @validate_arguments
     def take_book(self, book_id: int, user_id: int, day_to_expire: Optional[int]):
         book = self.get_book(book_id)
 
         if book.expire_date is not None and book.expire_date > datetime.today():
             raise BookedBook(book_id=book_id)
+
+        if book.bought is True:
+            raise BoughtBook(book_id=book_id)
 
         book_history = self.check_by_user(user_id)
         for row in book_history:
@@ -261,6 +227,43 @@ class BooksManager:
 
     @join_point
     @validate_arguments
+    def check_active_book(self, user_id: int) -> Optional[Books]:
+        history_rows = self.history_repo.get_by_user_id(user_id)
+        for row in history_rows:
+            if row.book.expire_date is not None:
+                if row.book.expire_date > datetime.today():
+                    return row.book
+
+    @join_point
+    @validate_arguments
+    def buy_book(self, user_id: int):
+        active_book = self.check_active_book(user_id)
+
+        if active_book is None:
+            raise NoActiveBook()
+
+        new_expire_date = datetime.today()
+
+        book_info = BooksInfoForChange(
+            isbn13=active_book.isbn13,
+            title=active_book.title,
+            subtitle=active_book.subtitle,
+            authors=active_book.authors,
+            publisher=active_book.publisher,
+            pages=active_book.pages,
+            year=active_book.year,
+            rating=active_book.rating,
+            desc=active_book.desc,
+            price=active_book.price,
+            created_date=active_book.created_date,
+            expire_date=new_expire_date,
+            bought=True,
+        )
+
+        book_info.populate_obj(active_book)
+
+    @join_point
+    @validate_arguments
     def return_book(self, book_id: int, user_id: int):
         book = self.get_book(book_id)
 
@@ -296,12 +299,3 @@ class BooksManager:
         books = self.history_repo.get_by_user_id(user_id)
 
         return books
-
-    @join_point
-    @validate_arguments
-    def check_active_book(self, user_id: int) -> Optional[Books]:
-        history_rows = self.history_repo.get_by_user_id(user_id)
-        for row in history_rows:
-            if row.book.expire_date is not None:
-                if row.book.expire_date > datetime.today():
-                    return row.book
