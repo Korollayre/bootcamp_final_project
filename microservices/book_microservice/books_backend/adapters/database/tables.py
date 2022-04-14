@@ -8,6 +8,7 @@ from sqlalchemy import (
     BigInteger,
     Boolean,
     Float,
+    ForeignKey,
 )
 
 metadata = MetaData()
@@ -23,12 +24,18 @@ books_table = Table(
     Column('pages', Integer),
     Column('year', Integer),
     Column('rating', Integer),
-    Column('pages', Integer),
     Column('desc', String(500)),
     Column('price', Float),
-    Column('user_id', Integer, default=None),
     Column('created_date', DateTime, nullable=False),
-    Column('booked_date', DateTime, default=None),
     Column('expire_date', DateTime, default=None),
     Column('bought', Boolean, default=False),
+)
+
+history_table = Table(
+    'books_history',
+    metadata,
+    Column('id', Integer, primary_key=True, autoincrement=True),
+    Column('book_id', BigInteger, ForeignKey('books.isbn13')),
+    Column('user_id', Integer),
+    Column('created_date', DateTime, nullable=False),
 )
