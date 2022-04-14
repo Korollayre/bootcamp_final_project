@@ -57,11 +57,14 @@ def create_cli(publisher, MessageBus):
     @click.argument('tags', nargs=-1, type=click.UNPROCESSED)
     def init(tags):
         barrier = threading.Barrier(len(tags) + 1)
-        time = datetime.datetime.now()
-
+        times = []
         for tag in tags:
+            time = datetime.datetime.now()
+
             thread = Thread(target=send_request, args=(tag, publisher, barrier, time), daemon=False)
             thread.start()
+
+            times.append(time)
 
         barrier.wait()
 
@@ -73,7 +76,7 @@ def create_cli(publisher, MessageBus):
                     'action': 'send',
                     'data': {
                         'tags': tags,
-                        'time': time,
+                        'timestamps': times,
                     },
                 }
             )
