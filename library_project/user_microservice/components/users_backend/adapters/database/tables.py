@@ -16,5 +16,5 @@ users = Table(
     Column('password', String, nullable=False),
     Column('login', String, nullable=False),
     Column('name', String, nullable=True),
-    Column('age', String, nullable=True),
+    Column('age', Integer, nullable=True),
 )
