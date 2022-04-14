@@ -1,28 +1,16 @@
-from typing import Optional
 from pydantic import validate_arguments
 
-from evraz.classic.app import (
-    validate_with_dto,
-    DTO,
-)
+from evraz.classic.app import validate_with_dto
 from evraz.classic.aspects import PointCut
 from evraz.classic.components import component
 
 from . import interfaces
+from .dto import UsersInfo
 from .entities import Users
 from .errors import NoUser, UserRegistration
 
 join_points = PointCut()
 join_point = join_points.join_point
-
-
-class UsersInfo(DTO):
-    email: str
-    password: str
-    login: str
-    name: str
-    id: Optional[int]
-    age: Optional[int]
 
 
 @component

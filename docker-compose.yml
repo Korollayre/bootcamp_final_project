@@ -1,7 +1,7 @@
 version: "3"
 services:
   rabbitmq:
-    image: rabbitmq:3
+    image: rabbitmq:3-management-alpine
     ports:
       - "15672:15672"
     environment:
@@ -17,9 +17,11 @@ services:
       POSTGRES_USER: my_user
       POSTGRES_PASSWORD: password
   users_api:
+    build:
+      context: ./library_project
+      dockerfile: deployment/users_backend/Dockerfile
     depends_on:
       - users_db
-    build: microservices/user_microservice
     restart: unless-stopped
     environment:
       DB_DRIVER: postgresql+psycopg2
@@ -31,6 +33,27 @@ services:
       SECRET_JWT_KEY: my_secre1_key
     command:
       - "entrypoint_api.sh"
+  users_api_consumer:
+    build:
+      context: ./library_project
+      dockerfile: deployment/users_backend/Dockerfile
+    depends_on:
+      - users_db
+    restart: unless-stopped
+    environment:
+      DB_DRIVER: postgresql+psycopg2
+      DB_USER: my_user
+      DB_PASSWORD: password
+      DB_HOST: users_db
+      DB_PORT: 5432
+      DB_DATABASE: users_service_db
+      SECRET_JWT_KEY: my_secre1_key
+      RABBITMQ_USER: user
+      RABBITMQ_PASSWORD: password
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+    command:
+      - "entrypoint_consumer.sh"
   books_db:
     image: postgres
     restart: unless-stopped
@@ -39,7 +62,9 @@ services:
       POSTGRES_USER: my_user
       POSTGRES_PASSWORD: password
   books_api:
-    build: microservices/book_microservice
+    build:
+      context: ./library_project
+      dockerfile: deployment/books_backend/Dockerfile
     restart: unless-stopped
     depends_on:
       - books_db
@@ -54,10 +79,13 @@ services:
       RABBITMQ_PASSWORD: password
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
+      SECRET_JWT_KEY: my_secre1_key
     command:
       - "entrypoint_api.sh"
   books_api_consumer:
-    build: microservices/book_microservice
+    build:
+      context: ./library_project
+      dockerfile: deployment/books_backend/Dockerfile
     restart: unless-stopped
     environment:
       DB_DRIVER: postgresql+psycopg2
@@ -80,6 +108,6 @@ services:
     ports:
       - "1234:80"
     volumes:
-      - ./nginx:/etc/nginx/conf.d
+      - ./library_project/deployment/nginx:/etc/nginx/conf.d
 volumes:
   rabbitmq_data:

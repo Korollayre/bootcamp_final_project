@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.isort]
 profile = "black"
-known_first_party = "book_microservice"
+known_first_party = "books_backend"
 known_evraz = "evraz"
 sections=["FUTURE", "STDLIB", "THIRDPARTY", "EVRAZ", "FIRSTPARTY", "LOCALFOLDER"]
 line_length = 80

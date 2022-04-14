@@ -50,6 +50,7 @@ class Books:
                 'title': book.title,
                 'subtitle': book.subtitle,
                 'rating': book.rating,
+                'pages': book.pages,
                 'price': book.price,
             } for book in books
         ]
@@ -127,12 +128,12 @@ class Books:
         else:
             response.media = [
                 {
-                'id': book.isbn13,
-                'title': book.title,
-                'subtitle': book.subtitle,
-                'rating': book.rating,
-                'price': book.price,
-            } for book in books
+                    'id': book.isbn13,
+                    'title': book.title,
+                    'subtitle': book.subtitle,
+                    'rating': book.rating,
+                    'price': book.price,
+                } for book in books
             ]
 
     @join_point

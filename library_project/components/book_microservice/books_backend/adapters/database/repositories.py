@@ -23,9 +23,9 @@ from books_backend.application.entities import (
 class BooksRepo(BaseRepository, interfaces.BooksRepo):
     def get_filtered_books(self, filter_query: List, order_by_field: Optional[str]) -> List[Books]:
         if order_by_field is None:
-            return self.session.query(Books).filter(and_(*filter_query)).all()
+            return self.session.query(Books).filter(and_(*filter_query, Books.bought == False)).all()
         else:
-            return self.session.query(Books).filter(and_(*filter_query, Books.bought is False)).order_by(
+            return self.session.query(Books).filter(and_(*filter_query, Books.bought == False)).order_by(
                 asc(getattr(Books, order_by_field))).all()
 
     def get_by_text_filter(self, field_name: str, filter_flag: str, filter_value: str):

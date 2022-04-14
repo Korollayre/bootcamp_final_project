@@ -1,0 +1,55 @@
+### Get all books without filters
+GET http://localhost:1234/api/books/show
+Accept: application/json
+
+### Get all books with filters
+GET http://localhost:1234/api/books/show?title=like:Mongo&price=gt:30&order_by=price
+Accept: application/json
+
+### Check book with id 9781492053514 info
+POST http://localhost:1234/api/books/info
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+book_id=9781492053514
+
+### Take book with id 9781492053514 by logined user
+POST http://localhost:1234/api/books/book
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+book_id=9781492053514
+
+### Check active book of logined user
+POST http://localhost:1234/api/books/active
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+### Check bought books of logined user
+POST http://localhost:1234/api/books/bought
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+### Buy active book of logined user
+POST http://localhost:1234/api/books/buy
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+### Return book with id 9781492053514 by logined user
+POST http://localhost:1234/api/books/return
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+book_id=9781492053514
+
+### Get booking history of logined user
+POST http://localhost:1234/api/books/user_check
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
