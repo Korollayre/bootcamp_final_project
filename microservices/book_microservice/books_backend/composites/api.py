@@ -24,6 +24,7 @@ class DB:
     context = TransactionContext(bind=engine, expire_on_commit=False)
 
     books_repo = database.repositories.BooksRepo(context=context)
+    history_repo = database.repositories.HistoryRepo(context=context)
 
 
 class PublisherMessageBus:
@@ -55,6 +56,7 @@ class PublisherMessageBus:
 class Application:
     books = services.BooksManager(
         books_repo=DB.books_repo,
+        history_repo=DB.history_repo,
         user_publisher=PublisherMessageBus.user_publisher,
     )
 
