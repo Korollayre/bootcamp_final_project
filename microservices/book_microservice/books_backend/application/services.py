@@ -191,7 +191,7 @@ class BooksManager:
         book_history = self.check_by_user(user_id)
         for row in book_history:
             if row.book.expire_date is None:
-                break
+                continue
             if row.book.expire_date > datetime.today():
                 raise BookedLimit()
 
@@ -236,13 +236,23 @@ class BooksManager:
 
     @join_point
     @validate_arguments
+    def check_bought_book(self, user_id: int) -> List[Books]:
+        history_rows = self.history_repo.get_by_user_id(user_id)
+        books = []
+        for row in history_rows:
+            if row.book.bought is True:
+                if row.book not in books:
+                    books.append(row.book)
+
+        return books
+
+    @join_point
+    @validate_arguments
     def buy_book(self, user_id: int):
         active_book = self.check_active_book(user_id)
 
         if active_book is None:
             raise NoActiveBook()
-
-        new_expire_date = datetime.today()
 
         book_info = BooksInfoForChange(
             isbn13=active_book.isbn13,
@@ -256,7 +266,7 @@ class BooksManager:
             desc=active_book.desc,
             price=active_book.price,
             created_date=active_book.created_date,
-            expire_date=new_expire_date,
+            expire_date=None,
             bought=True,
         )
 
