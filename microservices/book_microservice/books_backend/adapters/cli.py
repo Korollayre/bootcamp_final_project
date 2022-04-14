@@ -4,16 +4,11 @@ import threading
 import click
 import requests
 
-from evraz.classic.messaging import Message, Publisher
-from evraz.classic.aspects import PointCut
-
 from threading import Thread
 
-join_points = PointCut()
-join_point = join_points.join_point
+from evraz.classic.messaging import Message, Publisher
 
 
-@join_point
 def send_request(tag: str, publisher: Publisher, barrier, time: datetime):
     books_ids = []
 
