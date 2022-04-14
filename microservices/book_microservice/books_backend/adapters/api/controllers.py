@@ -118,7 +118,7 @@ class Books:
 
         request.media['user_id'] = user_id
 
-        self.service.update_book(**request.media)
+        self.service.buy_book(**request.media)
 
         response.media = {
             'message': 'Book info successfully update'
