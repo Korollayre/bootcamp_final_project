@@ -1,0 +1,26 @@
+@startuml
+
+header Демо проект
+title Схема БД
+
+hide circle
+skinparam linetype ortho
+
+
+entity Users {
+    * **id**  :  int
+    --
+    * **email**  :  text
+    __
+    * **password**  : text
+    __
+    * **login**  :  text
+    __
+    **name**  :  text
+    __
+    **age**  :  int
+}
+
+
+@enduml
+
