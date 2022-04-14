@@ -1,0 +1,92 @@
+@startuml
+
+header Финальный проект по итогу обучения
+title Диаграмма компонентов
+
+() HTTP as NGINX_HTTP
+
+
+package "Books Service" {
+
+    rectangle "Interfaces (Books Primary Adapters)" {
+      [Books API] as books_api
+      [RabbitMQ consumer] as books_rabbitmq_consumer
+    }
+
+    rectangle "Books Application" {
+      [Books] as books
+      interface "Books repositories" as books_repositories
+      interface "Books to Books publisher" as books_to_books_publisher
+      interface "Books to Users publisher" as books_to_users_publisher
+    }
+
+    rectangle "Adapters (Books Secondary Adapters)" {
+      database "PostgreSQL" as books_database
+      [Books Publisher] as books_publisher
+      [Users Publisher] as users_publisher
+    }
+
+    books_api ..> books
+    books_rabbitmq_consumer ..> books
+
+    books --( books_repositories
+    books --( books_to_books_publisher
+    books --( books_to_users_publisher
+
+    books_publisher -u- books_to_books_publisher
+    users_publisher -u- books_to_users_publisher
+    books_database -u- books_repositories
+
+}
+
+package "Users Service" {
+
+    rectangle "Interfaces (Users Primary Adapters)" {
+      [Users API] as users_api
+      [RabbitMQ consumer] as users_rabbitmq_consumer
+    }
+
+    rectangle "Users Application" {
+      [Users] as users
+      interface "Users repositories" as users_repositories
+      interface "Users mail sender" as users_mail_sender
+    }
+
+    rectangle "Adapters (Users Secondary Adapters)" {
+      database "PostgreSQL" as users_database
+      [Mail sender] as mail_sender
+    }
+
+    users_api ..> users
+    users_rabbitmq_consumer ..> users
+
+    users --( users_repositories
+    users --( users_mail_sender
+
+    mail_sender -u- users_mail_sender
+    users_database -u- users_repositories
+
+}
+
+package "Gateway" {
+
+    [Nginx] as nginx
+
+    NGINX_HTTP )-- nginx
+    nginx -- books_api
+    nginx -- users_api
+
+}
+
+package "Broker" {
+
+    [RabbitMQ] as rabbit
+
+    users_publisher --> rabbit
+    books_publisher --> rabbit
+
+    users_rabbitmq_consumer --> rabbit
+    books_rabbitmq_consumer --> rabbit
+}
+
+@enduml
