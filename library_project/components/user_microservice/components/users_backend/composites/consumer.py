@@ -9,6 +9,7 @@ from users_backend.adapters import (
     database,
     message_bus,
     mail_sending,
+    log,
 )
 from users_backend.application import services
 
