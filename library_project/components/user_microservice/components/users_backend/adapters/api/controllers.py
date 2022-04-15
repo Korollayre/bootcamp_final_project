@@ -14,6 +14,17 @@ from users_backend.application import services
 from .join_points import join_point
 
 
+def get_user_id_from_token(request: Request):
+    str_token = request.get_header('AUTHORIZATION').split()[1]
+    bytes_token = str.encode(str_token)
+    token_data = jwt.decode(
+        bytes_token,
+        key=os.getenv('SECRET_JWT_KEY'),
+        algorithms='HS256',
+    )
+
+    return token_data.get('sub')
+
 @authenticator_needed
 @component
 class Users:
@@ -58,6 +69,10 @@ class Users:
     @join_point
     @authenticate
     def on_get_show_user(self, request: Request, response: Response):
+        user_id = get_user_id_from_token(request)
+
+        request.params['user_id'] = user_id
+
         user = self.service.get_user(**request.params)
         response.media = {
             'email': user.email,
