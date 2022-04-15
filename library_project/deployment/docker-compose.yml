@@ -108,6 +108,6 @@ services:
     ports:
       - "1234:80"
     volumes:
-      - ./library_project/nginx:/etc/nginx/conf.d
+      - ../components/nginx:/etc/nginx/conf.d
 volumes:
   rabbitmq_data:
