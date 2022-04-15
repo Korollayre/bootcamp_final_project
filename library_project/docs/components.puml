@@ -10,14 +10,14 @@ package "Books Service" {
 
     rectangle "Interfaces (Books Primary Adapters)" {
       [Books API] as books_api
-      [RabbitMQ consumer] as books_rabbitmq_consumer
+      [RabbitMQ Consumer] as books_rabbitmq_consumer
     }
 
     rectangle "Books Application" {
       [Books] as books
-      interface "Books repositories" as books_repositories
-      interface "Books to Books publisher" as books_to_books_publisher
-      interface "Books to Users publisher" as books_to_users_publisher
+      interface "Books Repositories" as books_repositories
+      interface "Books to Books Publisher" as books_to_books_publisher
+      interface "Books to Users Publisher" as books_to_users_publisher
     }
 
     rectangle "Adapters (Books Secondary Adapters)" {
@@ -43,13 +43,13 @@ package "Users Service" {
 
     rectangle "Interfaces (Users Primary Adapters)" {
       [Users API] as users_api
-      [RabbitMQ consumer] as users_rabbitmq_consumer
+      [RabbitMQ Consumer] as users_rabbitmq_consumer
     }
 
     rectangle "Users Application" {
       [Users] as users
-      interface "Users repositories" as users_repositories
-      interface "Users mail sender" as users_mail_sender
+      interface "Users Repositories" as users_repositories
+      interface "Users Mail Sender" as users_mail_sender
     }
 
     rectangle "Adapters (Users Secondary Adapters)" {
