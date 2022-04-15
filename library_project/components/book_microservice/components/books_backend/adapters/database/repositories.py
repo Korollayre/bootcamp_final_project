@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import (
     List,
-    Optional,
+    Optional, Tuple,
 )
 from sqlalchemy import (
     and_,
@@ -21,12 +21,22 @@ from books_backend.application.entities import (
 
 @component
 class BooksRepo(BaseRepository, interfaces.BooksRepo):
-    def get_filtered_books(self, filter_query: List, order_by_field: Optional[str]) -> List[Books]:
-        if order_by_field is None:
+    def get_filtered_books(self, text_filters: Tuple, numeric_filters: Tuple, order_by: Optional[str]) -> List[Books]:
+        filter_query = []
+
+        for el in text_filters:
+            if el is not None:
+                filter_query.append(self.get_by_text_filter(el[0], el[1], el[2]))
+
+        for el in numeric_filters:
+            if el is not None:
+                filter_query.append(self.get_by_numbers_filter(el[0], el[1], el[2]))
+
+        if order_by is None:
             return self.session.query(Books).filter(and_(*filter_query, Books.bought == False)).all()
         else:
             return self.session.query(Books).filter(and_(*filter_query, Books.bought == False)).order_by(
-                asc(getattr(Books, order_by_field))).all()
+                asc(getattr(Books, order_by))).all()
 
     def get_by_text_filter(self, field_name: str, filter_flag: str, filter_value: str):
         filters = {

@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import jwt
 
@@ -29,6 +30,10 @@ def get_user_id_from_token(request: Request):
     return token_data.get('sub')
 
 
+def parse_filter_values(filter_value: str) -> List[str]:
+    return filter_value.split(':')
+
+
 @authenticator_needed
 @component
 class Books:
@@ -36,13 +41,37 @@ class Books:
 
     @join_point
     def on_get_show(self, request: Request, response: Response):
+        fields = (
+            'title',
+            'authors',
+            'publisher',
+            'price',
+        )
+
+        filters_data = {}
+
         limit = request.get_param_as_int('limit') or 50
         offset = request.get_param_as_int('offset') or 0
 
-        request.params['limit'] = limit
-        request.params['offset'] = offset
+        filters_data['limit'] = limit
+        filters_data['offset'] = offset
 
-        books = self.service.get_books(request.params)
+        for field in fields:
+            query_data = request.params.get(field)
+            if query_data is None:
+                filters_data[field] = None
+                continue
+            field_flag, field_value = parse_filter_values(query_data)
+            filters_data[field] = (field_flag, field_value)
+
+        order_by_data = request.params.get('order_by')
+
+        if order_by_data is None:
+            filters_data['order_by'] = None
+        else:
+            filters_data['order_by'] = order_by_data
+
+        books = self.service.get_books(**filters_data)
 
         response.media = [
             {

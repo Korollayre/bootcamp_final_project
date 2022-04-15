@@ -8,6 +8,7 @@ from typing import (
 )
 from itertools import groupby
 
+from evraz.classic.app import validate_with_dto
 from evraz.classic.aspects import PointCut
 from evraz.classic.components import component
 from evraz.classic.messaging import (
@@ -20,6 +21,7 @@ from .dto import (
     BooksInfo,
     BooksInfoForChange,
     BooksHistoryInfo,
+    FiltersInfo,
 )
 from .errors import (
     NoBook,
@@ -28,7 +30,6 @@ from .errors import (
     NoBookedBook,
     BookedBook,
     BookedLimit,
-    FilterKeyError,
 )
 from .entities import (
     Books,
@@ -107,67 +108,31 @@ class BooksManager:
             )
 
     @join_point
-    def get_books(self, query: dict) -> List[Books]:
-        books = self.filter_books(query)
+    @validate_with_dto
+    def get_books(self, filters_info: FiltersInfo) -> List[Books]:
 
-        return books
+        text_filters = (
+            filters_info.title,
+            filters_info.authors,
+            filters_info.publisher,
+        )
 
-    @join_point
-    @validate_arguments
-    def filter_books(self, query: dict) -> Optional[List[Books]]:
-        filter_query = []
+        numeric_filters = (
+            filters_info.price,
+        )
 
-        header_filter = query.get('title')
-        if header_filter is not None:
-            flag, value = self.parse_filter_values(header_filter)
-            filter_query.append(self.filter_by_text_filters('title', flag, value))
+        order_filter = filters_info.order_by
 
-        header_filter = query.get('authors')
-        if header_filter is not None:
-            flag, value = self.parse_filter_values(header_filter)
-            filter_query.append(self.filter_by_text_filters('authors', flag, value))
+        books = self.books_repo.get_filtered_books(
+            text_filters=text_filters,
+            numeric_filters=numeric_filters,
+            order_by=order_filter,
+        )
 
-        text_filter = query.get('publisher')
-        if text_filter is not None:
-            flag, value = self.parse_filter_values(text_filter)
-            filter_query.append(self.filter_by_text_filters('publisher', flag, value))
-
-        likes_filters = query.get('price')
-        if likes_filters is not None:
-            flag, value = self.parse_filter_values(likes_filters)
-            filter_query.append(self.filter_by_numbers_filters('price', flag, value))
-
-        order_by_field = query.get('order_by')
-        if order_by_field in ('price', 'pages', None):
-            books = self.books_repo.get_filtered_books(filter_query, order_by_field)
-        else:
-            raise FilterKeyError()
-
-        limit = query.get('limit')
-        offset = query.get('offset')
+        limit = filters_info.limit
+        offset = filters_info.offset
 
         return books[offset: limit + offset]
-
-    @staticmethod
-    def parse_filter_values(filter_value: str) -> List[str]:
-        return filter_value.split(':')
-
-    def filter_by_text_filters(self, field_name: str, filter_flag: str, filter_value: str):
-        filter_query = self.books_repo.get_by_text_filter(field_name, filter_flag, filter_value)
-
-        if filter_query is None:
-            raise FilterKeyError()
-
-        return filter_query
-
-    def filter_by_numbers_filters(self, field_name: str, filter_flag: str,
-                                  filter_value: str):
-        filter_query = self.books_repo.get_by_numbers_filter(field_name, filter_flag, filter_value)
-
-        if filter_query is None:
-            raise FilterKeyError()
-
-        return filter_query
 
     @join_point
     @validate_arguments

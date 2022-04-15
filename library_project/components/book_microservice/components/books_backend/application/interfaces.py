@@ -5,6 +5,7 @@ from abc import (
 from typing import (
     List,
     Optional,
+    Tuple,
 )
 
 from .entities import (
@@ -15,7 +16,7 @@ from .entities import (
 
 class BooksRepo(ABC):
     @abstractmethod
-    def get_filtered_books(self, filter_query: List, order_by_query: str) -> List[Books]:
+    def get_filtered_books(self, text_filters: Tuple, numeric_filters: Tuple, order_by: Optional[str]) -> List[Books]:
         ...
 
     @abstractmethod
