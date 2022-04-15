@@ -207,5 +207,6 @@ class Books:
                 'subtitle': row.book.subtitle,
                 'rating': row.book.rating,
                 'price': row.book.price,
+                'created_date': row.created_date.strftime("%Y-%m-%d %H:%M:%S"),
             } for row in history_rows
         ]
