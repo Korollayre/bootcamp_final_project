@@ -51,8 +51,6 @@ class BooksManager:
     @join_point
     @validate_arguments
     def parse_broker_message(self, api: str, action: str, data: dict):
-        with open('books.txt', 'w') as file:
-            file.write(f'{action}, {data}')
         if action == 'create':
             book_check = self.books_repo.get_by_id(data['isbn13'])
 
@@ -66,9 +64,6 @@ class BooksManager:
             self.books_repo.add_instance(new_book)
 
         elif action == 'send':
-
-            print('send to user')
-
             mail_data = {}
 
             tags = data.get('tags')
