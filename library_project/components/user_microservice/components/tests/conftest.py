@@ -3,13 +3,13 @@ import pytest
 from users_backend.application import entities
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def user():
     return entities.Users(
         id=1,
-        login='UserLogin',
-        email='UserEmail',
-        name='UserName',
+        login='SuperDanya',
+        email='danya@mail.ru',
         password='password',
-        age=22,
+        name='Danya',
+        age=None,
     )
