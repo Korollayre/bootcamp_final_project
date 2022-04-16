@@ -1,7 +1,7 @@
 version: "3"
 services:
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:3
     ports:
       - "15672:15672"
     environment:
@@ -10,10 +10,9 @@ services:
     volumes:
       - "rabbitmq_data:/data"
   users_db:
-    image: postgres
+    build: ../components/postgres/user_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: users_service_db
       POSTGRES_USER: my_user
       POSTGRES_PASSWORD: password
   users_api:
@@ -30,6 +29,7 @@ services:
       DB_HOST: users_db
       DB_PORT: 5432
       DB_DATABASE: users_service_db
+      DB_TEST_DATABASE: test_users_service_db
       SECRET_JWT_KEY: my_secre1_key
     command:
       - "entrypoint_api.sh"
@@ -55,10 +55,9 @@ services:
     command:
       - "entrypoint_consumer.sh"
   books_db:
-    image: postgres
+    build: ../components/postgres/book_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: books_service_db
       POSTGRES_USER: my_user
       POSTGRES_PASSWORD: password
   books_api:
@@ -75,6 +74,7 @@ services:
       DB_HOST: books_db
       DB_PORT: 5432
       DB_DATABASE: books_service_db
+      DB_TEST_DATABASE: test_books_service_db
       RABBITMQ_USER: user
       RABBITMQ_PASSWORD: password
       RABBITMQ_HOST: rabbitmq
