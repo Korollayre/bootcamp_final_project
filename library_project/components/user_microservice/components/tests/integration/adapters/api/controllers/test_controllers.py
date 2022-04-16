@@ -1,6 +1,3 @@
-import json
-
-
 def test__on_post_register(client, user):
     test_case = {
         'login': 'SuperDanya',
@@ -9,11 +6,9 @@ def test__on_post_register(client, user):
         'name': 'Danya',
     }
 
-    test_case_bytes = json.dumps(test_case)
-
     result = client.simulate_post(
         path='/api/users/register',
-        body=test_case_bytes
+        json=test_case
     )
 
     assert result.json == {'message': 'User registration completed successfully'}
@@ -25,11 +20,9 @@ def test__on_post_login(client, user):
         'password': 'password',
     }
 
-    test_case_bytes = json.dumps(test_case)
-
     result = client.simulate_post(
         path='/api/users/login',
-        body=test_case_bytes
+        json=test_case
     )
 
     assert result.json == {'message': 'Login complete successful'}
