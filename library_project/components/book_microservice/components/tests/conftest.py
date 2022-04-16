@@ -42,6 +42,7 @@ def book_2():
         bought=False,
     )
 
+
 @pytest.fixture
 def booked_book():
     return entities.Books(
@@ -106,6 +107,7 @@ def book_history_2(book_2):
     book_history_2.book = book_2
 
     return book_history_2
+
 
 @pytest.fixture
 def book_history_with_booked_book(booked_book):
