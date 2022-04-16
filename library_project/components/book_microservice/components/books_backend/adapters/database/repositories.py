@@ -61,9 +61,6 @@ class BooksRepo(BaseRepository, interfaces.BooksRepo):
     def get_by_id(self, book_id: int) -> Optional[Books]:
         return self.session.query(Books).filter_by(isbn13=book_id).one_or_none()
 
-    def get_by_user(self, user_id: int) -> Optional[Books]:
-        return self.session.query(Books).filter_by(user_id=user_id).all()
-
     def add_instance(self, book: Books):
         self.session.add(book)
         self.session.flush()
