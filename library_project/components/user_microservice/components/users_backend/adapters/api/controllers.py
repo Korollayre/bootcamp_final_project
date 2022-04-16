@@ -25,6 +25,7 @@ def get_user_id_from_token(request: Request):
 
     return token_data.get('sub')
 
+
 @authenticator_needed
 @component
 class Users:
