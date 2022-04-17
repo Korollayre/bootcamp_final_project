@@ -63,15 +63,6 @@ def test__get_by_email(user_repo, fill_db, second_user):
     assert second_user == user_repo.get_by_email(**test_case)
 
 
-def test__login(user_repo, fill_db, first_user):
-    test_case = {
-        'user_mail': 'danya@mail.ru',
-        'user_password': 'password',
-    }
-
-    assert first_user == user_repo.login(**test_case)
-
-
 def test__add_instance(user_repo, fill_db):
     test_case = {
         'id': 3,
@@ -82,3 +73,12 @@ def test__add_instance(user_repo, fill_db):
     }
 
     assert user_repo.add_instance(Users(**test_case)) is None
+
+
+def test__login(user_repo, fill_db, first_user):
+    test_case = {
+        'user_mail': 'danya@mail.ru',
+        'user_password': 'password',
+    }
+
+    assert first_user == user_repo.login(**test_case)
