@@ -64,7 +64,10 @@ class FiltersInfo(DTO):
 
         field_flag, field_value = value
 
-        if field_flag not in ('like', 'eq',):
+        if field_flag not in (
+                'like',
+                'eq',
+        ):
             raise FilterKeyError(
                 field='title',
                 key=field_flag,
@@ -79,7 +82,10 @@ class FiltersInfo(DTO):
 
         field_flag, field_value = value
 
-        if field_flag not in ('like', 'eq',):
+        if field_flag not in (
+                'like',
+                'eq',
+        ):
             raise FilterKeyError(
                 field='authors',
                 key=field_flag,
@@ -94,7 +100,10 @@ class FiltersInfo(DTO):
 
         field_flag, field_value = value
 
-        if field_flag not in ('like', 'eq',):
+        if field_flag not in (
+                'like',
+                'eq',
+        ):
             raise FilterKeyError(
                 field='publisher',
                 key=field_flag,
@@ -109,7 +118,12 @@ class FiltersInfo(DTO):
 
         field_flag, field_value = value
 
-        if field_flag not in ('gt', 'gte', 'lt', 'lte',):
+        if field_flag not in (
+                'gt',
+                'gte',
+                'lt',
+                'lte',
+        ):
             raise FilterKeyError(
                 field='price',
                 key=field_flag,
@@ -122,7 +136,10 @@ class FiltersInfo(DTO):
         if value is None:
             return
 
-        if value not in ('price', 'pages',):
+        if value not in (
+                'price',
+                'pages',
+        ):
             raise FilterKeyError(
                 field=value,
                 key='order_by',

@@ -38,7 +38,7 @@ Content-Type: application/x-www-form-urlencoded
 
 > {% client.global.set("auth_token", 'empty_token'); %}
 
-### Send GET request for check user profile with id = 1
-GET http://localhost:1234/api/users/show_user?user_id=1
+### Send GET request logined user profile
+GET http://localhost:1234/api/users/show_user
 Authorization: Bearer {{auth_token}}
 Accept: application/json

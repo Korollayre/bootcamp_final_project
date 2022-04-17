@@ -3,7 +3,7 @@ GET http://localhost:1234/api/books/show
 Accept: application/json
 
 ### Get all books with filters
-GET http://localhost:1234/api/books/show?title=like:Mongo&price=gt:30&order_by=price
+GET http://localhost:1234/api/books/show?title=like:mongo&price=gt:30&order_by=price
 Accept: application/json
 
 ### Check book with id 9781492053514 info
@@ -12,7 +12,7 @@ Authorization: Bearer {{auth_token}}
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
-book_id=9781492053514
+book_id=9781849515023
 
 ### Take book with id 9781492053514 by logined user
 POST http://localhost:1234/api/books/book
@@ -20,7 +20,15 @@ Authorization: Bearer {{auth_token}}
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
-book_id=9781492053514
+book_id=9781849515023
+
+### Take book with id 9781492053514 by logined user for 3 days
+POST http://localhost:1234/api/books/book
+Authorization: Bearer {{auth_token}}
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+book_id=9781849515023&day_to_expire=3
 
 ### Check active book of logined user
 POST http://localhost:1234/api/books/active
@@ -46,7 +54,7 @@ Authorization: Bearer {{auth_token}}
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
-book_id=9781492053514
+book_id=9781849515023
 
 ### Get booking history of logined user
 POST http://localhost:1234/api/books/user_check

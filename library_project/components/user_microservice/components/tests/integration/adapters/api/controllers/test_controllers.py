@@ -6,12 +6,11 @@ def test__on_post_register(client, user):
         'name': 'Danya',
     }
 
-    result = client.simulate_post(
-        path='/api/users/register',
-        json=test_case
-    )
+    result = client.simulate_post(path='/api/users/register', json=test_case)
 
-    assert result.json == {'message': 'User registration completed successfully'}
+    assert result.json == {
+        'message': 'User registration completed successfully'
+    }
 
 
 def test__on_post_login(client, user):
@@ -20,10 +19,7 @@ def test__on_post_login(client, user):
         'password': 'password',
     }
 
-    result = client.simulate_post(
-        path='/api/users/login',
-        json=test_case
-    )
+    result = client.simulate_post(path='/api/users/login', json=test_case)
 
     assert result.json == {'message': 'Login complete successful'}
 
@@ -33,10 +29,7 @@ def test__on_get_logout(client, user):
         'AUTHORIZATION': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImxvZ2luIjoiU3VwZXJEYW55YSIsIm5hbWUiOiJEYW55YSIsImdyb3VwIjoiVXNlciIsImVtYWlsIjoiZGFueWFAbWFpbC5ydSJ9.zlY_pU6vcCHp0qodcmOwiIArRvaAvDsroCPegP_ePW0',
     }
 
-    result = client.simulate_get(
-        path='/api/users/logout',
-        headers=test_case
-    )
+    result = client.simulate_get(path='/api/users/logout', headers=test_case)
 
     assert result.json == {'message': 'Logout complete successful'}
 
@@ -46,10 +39,7 @@ def test__on_get_show_user(client, user):
         'AUTHORIZATION': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImxvZ2luIjoiU3VwZXJEYW55YSIsIm5hbWUiOiJEYW55YSIsImdyb3VwIjoiVXNlciIsImVtYWlsIjoiZGFueWFAbWFpbC5ydSJ9.zlY_pU6vcCHp0qodcmOwiIArRvaAvDsroCPegP_ePW0',
     }
 
-    result = client.simulate_get(
-        path='/api/users/show_user',
-        headers=test_case
-    )
+    result = client.simulate_get(path='/api/users/show_user', headers=test_case)
 
     excepted = {
         'login': 'SuperDanya',

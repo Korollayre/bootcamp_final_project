@@ -16,7 +16,8 @@ def book_1():
         pages=62,
         year=2011,
         rating=3,
-        desc="Create a MongoDB cluster that will to grow to meet the needs of your application.",
+        desc=
+        "Create a MongoDB cluster that will to grow to meet the needs of your application.",
         price=16.99,
         created_date='2022-04-22 07:47:20',
         expire_date=None,
@@ -29,13 +30,15 @@ def book_2():
     return entities.Books(
         isbn13=9781449303211,
         title="Node.js, MongoDB and Angular Web Development, 2nd Edition",
-        subtitle="The definitive guide to using the MEAN stack to build web applications",
+        subtitle=
+        "The definitive guide to using the MEAN stack to build web applications",
         authors="Brad Dayley, Brendan Dayley, Caleb Dayley",
         publisher="Addison-Wesley",
         pages=640,
         year=2017,
         rating=4,
-        desc="Node.js is a leading server-side programming environment, MongoDB is the most popular NoSQL database.",
+        desc=
+        "Node.js is a leading server-side programming environment, MongoDB is the most popular NoSQL database.",
         price=33.16,
         created_date='2022-04-22 07:47:20',
         expire_date=None,
@@ -54,7 +57,8 @@ def booked_book():
         pages=62,
         year=2011,
         rating=3,
-        desc="Create a MongoDB cluster that will to grow to meet the needs of your application.",
+        desc=
+        "Create a MongoDB cluster that will to grow to meet the needs of your application.",
         price=16.99,
         created_date='2022-04-22 07:47:20',
         expire_date=datetime.today() + timedelta(7),
@@ -67,13 +71,15 @@ def bought_book():
     return entities.Books(
         isbn13=9781449303211,
         title="Node.js, MongoDB and Angular Web Development, 2nd Edition",
-        subtitle="The definitive guide to using the MEAN stack to build web applications",
+        subtitle=
+        "The definitive guide to using the MEAN stack to build web applications",
         authors="Brad Dayley, Brendan Dayley, Caleb Dayley",
         publisher="Addison-Wesley",
         pages=640,
         year=2017,
         rating=4,
-        desc="Node.js is a leading server-side programming environment, MongoDB is the most popular NoSQL database.",
+        desc=
+        "Node.js is a leading server-side programming environment, MongoDB is the most popular NoSQL database.",
         price=33.16,
         created_date='2022-04-22 07:47:20',
         expire_date=None,

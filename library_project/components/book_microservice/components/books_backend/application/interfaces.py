@@ -15,16 +15,24 @@ from .entities import (
 
 
 class BooksRepo(ABC):
+
     @abstractmethod
-    def get_filtered_books(self, text_filters: Tuple, numeric_filters: Tuple, order_by: Optional[str]) -> List[Books]:
+    def get_filtered_books(
+        self, text_filters: Tuple, numeric_filters: Tuple,
+        order_by: Optional[str]
+    ) -> List[Books]:
         ...
 
     @abstractmethod
-    def get_by_text_filter(self, field_name: str, filter_flag: str, filter_value: str):
+    def get_by_text_filter(
+        self, field_name: str, filter_flag: str, filter_value: str
+    ):
         ...
 
     @abstractmethod
-    def get_by_numbers_filter(self, field_name: str, filter_flag: str, filter_value: str):
+    def get_by_numbers_filter(
+        self, field_name: str, filter_flag: str, filter_value: str
+    ):
         ...
 
     @abstractmethod
@@ -41,6 +49,7 @@ class BooksRepo(ABC):
 
 
 class HistoryRepo(ABC):
+
     @abstractmethod
     def get_by_user_id(self, user_id: int) -> List[BooksHistory]:
         ...

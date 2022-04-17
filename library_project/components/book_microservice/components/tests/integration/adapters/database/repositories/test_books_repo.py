@@ -10,7 +10,6 @@ from books_backend.adapters.database import (
 )
 from books_backend.application.entities import Books
 
-
 created_date = datetime.datetime.now()
 
 
@@ -113,7 +112,11 @@ def test__get_filtered_books(books_repo, fill_books_table):
 
 
 def test__get_filtered_books__with_filters(books_repo, fill_books_table):
-    assert len(books_repo.get_filtered_books((('title', 'eq', 'MySQL, 4th Edition'),), (), None)) == 1
+    assert len(
+        books_repo.get_filtered_books(
+            (('title', 'eq', 'MySQL, 4th Edition'), ), (), None
+        )
+    ) == 1
 
 
 def test__get_by_id(books_repo, fill_books_table):

@@ -34,9 +34,7 @@ class Users:
     @join_point
     def on_post_register(self, request: Request, response: Response):
         self.service.create_user(**request.media)
-        response.media = {
-            'message': 'User registration completed successfully'
-        }
+        response.media = {'message': 'User registration completed successfully'}
 
     @join_point
     def on_post_login(self, request: Request, response: Response):
@@ -55,17 +53,13 @@ class Users:
                 algorithm='HS256',
             ),
         )
-        response.media = {
-            'message': 'Login complete successful'
-        }
+        response.media = {'message': 'Login complete successful'}
 
     @join_point
     @authenticate
     def on_get_logout(self, request: Request, response: Response):
         response.set_header('auth_token', 'empty token')
-        response.media = {
-            'message': 'Logout complete successful'
-        }
+        response.media = {'message': 'Logout complete successful'}
 
     @join_point
     @authenticate

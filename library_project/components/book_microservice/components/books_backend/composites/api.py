@@ -62,7 +62,9 @@ class Application:
 
 
 class ConsumerMessageBus:
-    consumer = message_bus.create_consumer(PublisherMessageBus.connection, Application.books)
+    consumer = message_bus.create_consumer(
+        PublisherMessageBus.connection, Application.books
+    )
 
     @staticmethod
     def declare_scheme():
@@ -78,6 +80,4 @@ class Aspects:
     api.join_points.join(DB.context)
 
 
-app = api.create_app(
-    books_service=Application.books,
-)
+app = api.create_app(books_service=Application.books, )

@@ -1,7 +1,5 @@
 def test__on_get_show(client):
-    result = client.simulate_get(
-        path='/api/books/show',
-    )
+    result = client.simulate_get(path='/api/books/show', )
 
     assert len(result.json) == 2
 
@@ -137,9 +135,7 @@ def test__on_post_user_check(client):
     }
 
     result = client.simulate_post(
-        path='/api/books/user_check',
-        headers=auth_data,
-        json={}
+        path='/api/books/user_check', headers=auth_data, json={}
     )
 
     assert len(result.json) == 1

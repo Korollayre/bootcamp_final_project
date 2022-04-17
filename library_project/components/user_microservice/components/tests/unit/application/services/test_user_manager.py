@@ -23,11 +23,10 @@ def test__parse_broker_message(users_service, users_repo):
         'api': 'some_api',
         'action': 'send',
         'data': {
-            'tag_1':
-                [
-                    'book_1',
-                    'book_2',
-                ]
+            'tag_1': [
+                'book_1',
+                'book_2',
+            ]
         },
     }
 
@@ -42,21 +41,19 @@ parse_broker_message__invalid_cases = [
     {
         'api': 'some_api',
         'data': {
-            'tag_1':
-                [
-                    'book_1',
-                    'book_2',
-                ]
+            'tag_1': [
+                'book_1',
+                'book_2',
+            ]
         },
     },
     {
         'action': 'send',
         'data': {
-            'tag_1':
-                [
-                    'book_1',
-                    'book_2',
-                ]
+            'tag_1': [
+                'book_1',
+                'book_2',
+            ]
         },
     },
     {
@@ -64,9 +61,7 @@ parse_broker_message__invalid_cases = [
         'action': 'send',
         'data': 111
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -126,9 +121,7 @@ create_user__invalid_cases = [
         'name': 'some_name',
         'age': 'bbbbbbbbbbb',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -168,9 +161,7 @@ get_user_invalid_cases = [
         'user_id': 1,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -212,9 +203,7 @@ login_invalid_cases = [
         'password': 'password',
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 

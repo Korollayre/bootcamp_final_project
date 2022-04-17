@@ -46,6 +46,4 @@ class Aspects:
     api.join_points.join(DB.context)
 
 
-app = api.create_app(
-    users_service=Application.users,
-)
+app = api.create_app(users_service=Application.users, )

@@ -11,6 +11,7 @@ from .entities import Users
 
 
 class UsersRepo(ABC):
+
     @abstractmethod
     def get_all(self) -> List[Users]:
         ...
@@ -33,6 +34,7 @@ class UsersRepo(ABC):
 
 
 class MailSender(ABC):
+
     @abstractmethod
     def send(self, user: str, title: str, data: str):
         ...

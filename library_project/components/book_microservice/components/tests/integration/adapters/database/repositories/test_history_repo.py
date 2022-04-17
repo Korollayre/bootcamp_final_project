@@ -30,8 +30,7 @@ def fill_history_table(session):
             "created_date": created_date,
             "expire_date": None,
             "bought": False,
-        },
-        {
+        }, {
             "isbn13": 9780470096000,
             "title": "PHP and MySQL For Dummies, 3rd Edition",
             "subtitle": "",
@@ -45,8 +44,7 @@ def fill_history_table(session):
             "created_date": created_date,
             "expire_date": created_date + datetime.timedelta(5),
             "bought": False,
-        },
-        {
+        }, {
             "isbn13": 9781449326333,
             "title": "PostgreSQL: Up and Running",
             "subtitle": "A Practical Guide to the Advanced Open Source Database",
@@ -60,8 +58,7 @@ def fill_history_table(session):
             "created_date": created_date,
             "expire_date": None,
             "bought": False,
-        },
-        {
+        }, {
             "isbn13": 9780132800754,
             "title": "MySQL, 4th Edition",
             "subtitle": "",

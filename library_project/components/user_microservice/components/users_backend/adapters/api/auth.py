@@ -14,16 +14,10 @@ class Permissions:
 class Groups:
     ADMINS = Group(
         'admins',
-        permissions=(
-            Permissions.FULL_CONTROL,
-        ),
+        permissions=(Permissions.FULL_CONTROL, ),
     )
 
 
-jwt_strategy = strategies.JWT(
-    secret_key=os.getenv('SECRET_JWT_KEY'),
-)
+jwt_strategy = strategies.JWT(secret_key=os.getenv('SECRET_JWT_KEY'), )
 
-ALL_GROUPS = (
-    Groups.ADMINS,
-)
+ALL_GROUPS = (Groups.ADMINS, )

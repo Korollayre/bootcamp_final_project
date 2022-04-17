@@ -6,7 +6,4 @@ from . import tables
 
 mapper = registry()
 
-mapper.map_imperatively(
-    entities.Users,
-    tables.users
-)
+mapper.map_imperatively(entities.Users, tables.users)

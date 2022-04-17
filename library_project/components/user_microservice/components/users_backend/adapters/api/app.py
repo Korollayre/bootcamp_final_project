@@ -9,10 +9,7 @@ from . import (
 )
 
 
-def create_app(
-        users_service: services.UsersManager,
-
-) -> App:
+def create_app(users_service: services.UsersManager, ) -> App:
     authenticator = Authenticator(app_groups=auth.ALL_GROUPS)
 
     authenticator.set_strategies(auth.jwt_strategy)

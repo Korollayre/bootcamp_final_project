@@ -1,6 +1,6 @@
 from datetime import (
     datetime,
-    timedelta
+    timedelta,
 )
 from typing import (
     List,
@@ -93,8 +93,7 @@ class BooksManager:
 
             self.user_publisher.publish(
                 Message(
-                    'result',
-                    {
+                    'result', {
                         'api': 'books',
                         'action': 'send',
                         'data': mail_data,
@@ -112,9 +111,7 @@ class BooksManager:
             filters_info.publisher,
         )
 
-        numeric_filters = (
-            filters_info.price,
-        )
+        numeric_filters = (filters_info.price, )
 
         order_filter = filters_info.order_by
 
@@ -127,7 +124,7 @@ class BooksManager:
         limit = filters_info.limit
         offset = filters_info.offset
 
-        return books[offset: limit + offset]
+        return books[offset:limit + offset]
 
     @join_point
     @validate_arguments
@@ -141,7 +138,9 @@ class BooksManager:
 
     @join_point
     @validate_arguments
-    def take_book(self, book_id: int, user_id: int, day_to_expire: Optional[int]):
+    def take_book(
+        self, book_id: int, user_id: int, day_to_expire: Optional[int]
+    ):
         book = self.get_book(book_id)
 
         if book.expire_date is not None and book.expire_date > datetime.today():
@@ -167,7 +166,8 @@ class BooksManager:
 
         self.history_repo.add_instance(new_history_row)
 
-        new_expire_date = datetime.today() + timedelta(day_to_expire if day_to_expire <= 7 else 7)
+        new_expire_date = datetime.today(
+        ) + timedelta(day_to_expire if day_to_expire <= 7 else 7)
 
         book_info = BooksInfoForChange(
             isbn13=book.isbn13,
@@ -238,7 +238,9 @@ class BooksManager:
     def return_book(self, book_id: int, user_id: int):
         book = self.get_book(book_id)
 
-        book_history = self.history_repo.get_by_ids(book_id=book_id, user_id=user_id)
+        book_history = self.history_repo.get_by_ids(
+            book_id=book_id, user_id=user_id
+        )
 
         if book_history is None:
             raise NoBookedBook(user_id=user_id, book_id=book_id)

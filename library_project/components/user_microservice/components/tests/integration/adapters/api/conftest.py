@@ -19,8 +19,6 @@ def user_service_for_controllers(user):
 
 @pytest.fixture(scope='function')
 def client(user_service_for_controllers):
-    app = api.create_app(
-        users_service=user_service_for_controllers,
-    )
+    app = api.create_app(users_service=user_service_for_controllers, )
 
     return testing.TestClient(app)

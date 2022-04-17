@@ -3,7 +3,9 @@ import sys
 
 logger = logging.getLogger('user_logger')
 
-logger_format = logging.Formatter('%(asctime)s.%(msecs)03d [%(levelname)s]|[%(name)s]: %(message)s')
+logger_format = logging.Formatter(
+    '%(asctime)s.%(msecs)03d [%(levelname)s]|[%(name)s]: %(message)s'
+)
 
 stream_handler = logging.StreamHandler(sys.stdout)
 stream_handler.setFormatter(logger_format)

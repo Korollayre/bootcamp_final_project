@@ -96,8 +96,8 @@ class Books:
             'publisher': book.publisher,
             'pages': book.pages,
             'year': book.year,
-            'expire_date': book.expire_date.strftime(
-                "%Y-%m-%d %H:%M:%S") if book.expire_date is not None else 'Book is free for booking',
+            'expire_date': book.expire_date.strftime("%Y-%m-%d %H:%M:%S")
+            if book.expire_date is not None else 'Book is free for booking',
             'rating': book.rating,
             'desc': book.desc,
             'price': book.price,
@@ -115,9 +115,7 @@ class Books:
 
         self.service.take_book(**request.media)
 
-        response.media = {
-            'message': 'Book successfully booked'
-        }
+        response.media = {'message': 'Book successfully booked'}
 
     @join_point
     @authenticate
@@ -129,9 +127,7 @@ class Books:
         book = self.service.check_active_book(**request.media)
 
         if book is None:
-            response.media = {
-                'message': 'No active books'
-            }
+            response.media = {'message': 'No active books'}
         else:
             response.media = {
                 'id': book.isbn13,
@@ -151,9 +147,7 @@ class Books:
         books = self.service.check_bought_book(**request.media)
 
         if len(books) == 0:
-            response.media = {
-                'message': 'No bought books'
-            }
+            response.media = {'message': 'No bought books'}
         else:
             response.media = [
                 {
@@ -174,9 +168,7 @@ class Books:
 
         self.service.buy_book(**request.media)
 
-        response.media = {
-            'message': 'Book successfully bought'
-        }
+        response.media = {'message': 'Book successfully bought'}
 
     @join_point
     @authenticate
@@ -187,9 +179,7 @@ class Books:
 
         self.service.return_book(**request.media)
 
-        response.media = {
-            'message': 'Book successfully returned'
-        }
+        response.media = {'message': 'Book successfully returned'}
 
     @join_point
     @authenticate

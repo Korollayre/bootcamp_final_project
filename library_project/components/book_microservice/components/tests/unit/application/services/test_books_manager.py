@@ -32,8 +32,7 @@ parse_broker_message__valid_cases = [
         'data': {
             'isbn13': 'book_info'
         },
-    },
-    {
+    }, {
         'api': 'books',
         'action': 'send',
         'data': {
@@ -77,9 +76,7 @@ parse_broker_message__invalid_cases = [
         'action': 'create',
         'data': 111,
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -105,9 +102,7 @@ get_book__invalid_cases = [
         'book_id': 9781449303211,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -170,9 +165,7 @@ take_book__invalid_cases = [
         'day_to_expire': 7,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -208,29 +201,40 @@ def test__take_book__bought_book(book_service, books_repo, bought_book):
         book_service.take_book(**case_data)
 
 
-def test__take_book__booked_limit(book_service, history_repo, book_history_with_booked_book):
+def test__take_book__booked_limit(
+    book_service, history_repo, book_history_with_booked_book
+):
     case_data = {
         'book_id': 628316291631,
         'user_id': 1,
         'day_to_expire': 7,
     }
 
-    book_history_with_booked_book.book.expire_date = datetime.today() + timedelta(8)
+    book_history_with_booked_book.book.expire_date = datetime.today(
+    ) + timedelta(8)
 
-    history_repo.get_by_user_id = Mock(return_value=[book_history_with_booked_book])
+    history_repo.get_by_user_id = Mock(
+        return_value=[book_history_with_booked_book]
+    )
 
     with pytest.raises(BookedLimit):
         book_service.take_book(**case_data)
 
 
-def test__check_active_book(book_service, history_repo, book_history_with_booked_book):
+def test__check_active_book(
+    book_service, history_repo, book_history_with_booked_book
+):
     case_data = {
         'user_id': 1,
     }
 
-    history_repo.get_by_user_id = Mock(return_value=[book_history_with_booked_book])
+    history_repo.get_by_user_id = Mock(
+        return_value=[book_history_with_booked_book]
+    )
 
-    assert book_service.check_active_book(**case_data) == book_history_with_booked_book.book
+    assert book_service.check_active_book(
+        **case_data
+    ) == book_history_with_booked_book.book
 
 
 check_active_book__invalid_cases = [
@@ -241,9 +245,7 @@ check_active_book__invalid_cases = [
         'user_id': 1,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -253,12 +255,16 @@ def test__check_active_book__missing_arguments(book_service, test_cases):
         book_service.check_active_book(**test_cases)
 
 
-def test__check_bought_book(book_service, history_repo, book_history_with_bought_book, bought_book):
+def test__check_bought_book(
+    book_service, history_repo, book_history_with_bought_book, bought_book
+):
     case_data = {
         'user_id': 1,
     }
 
-    history_repo.get_by_user_id = Mock(return_value=[book_history_with_bought_book])
+    history_repo.get_by_user_id = Mock(
+        return_value=[book_history_with_bought_book]
+    )
 
     assert book_service.check_bought_book(**case_data) == [bought_book]
 
@@ -271,9 +277,7 @@ check_bought_book__invalid_cases = [
         'user_id': 1,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -288,7 +292,9 @@ def test__buy_book(book_service, history_repo, book_history_with_booked_book):
         'user_id': 1,
     }
 
-    history_repo.get_by_user_id = Mock(return_value=[book_history_with_booked_book])
+    history_repo.get_by_user_id = Mock(
+        return_value=[book_history_with_booked_book]
+    )
 
     assert book_service.buy_book(**case_data) is None
 
@@ -301,9 +307,7 @@ buy_book__invalid_cases = [
         'user_id': 1,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
@@ -321,7 +325,10 @@ def test__buy_book__no_active_book(book_service):
         assert book_service.buy_book(**case_data) is None
 
 
-def test__return_book(book_service, books_repo, booked_book, history_repo, book_history_with_booked_book):
+def test__return_book(
+    book_service, books_repo, booked_book, history_repo,
+    book_history_with_booked_book
+):
     case_data = {
         'book_id': 628316291631,
         'user_id': 1,
@@ -349,9 +356,7 @@ return_book__invalid_cases = [
         'user_id': 1,
         'extra_field': 'data',
     },
-    {
-
-    },
+    {},
 ]
 
 
