@@ -60,8 +60,7 @@ API будут идти через него.
 ### *user_microservice*
 
 Сервис, взаимодействующий с сущностями пользователей - `Users`. В сервисе реализована логика для создания пользователя,
-его авторизации, и осуществления рассылки сообщений. Пример http-запросов находится в директории
-*`library_project/components/user_microservice/docs/http_requests`* в файле *`users_api_requests.http`*
+его авторизации, и осуществления рассылки сообщений. https://github.com/Korollayre/bootcamp_final_project/blob/master/library_project/components/user_microservice/docs/http_requests/users_api_requests.http
 
 ***HTTP API***
 
@@ -89,8 +88,7 @@ API будут идти через него.
 Сервис, взаимодействующий с сущностями книг - `Books`. В сервисе реализована логика для добавления книг в БД через cli
 команду, получения списка книг (с фильтрами и без), получения полной информации по книге, бронирование, покупка, и
 возврат книг, а так получение информации об текущей забронированной книге, получение истории бронирования, и получение
-списка купленных книг. Пример http-запросов находится в директории
-*`library_project/components/book_microservice/docs/http_requests`* в файле *`books_api_requests.http`*
+списка купленных книг. Пример http-запросов - https://github.com/Korollayre/bootcamp_final_project/blob/master/library_project/components/book_microservice/docs/http_requests/books_api_requests.http
 
 ***HTTP API***
 
