@@ -60,7 +60,7 @@ API будут идти через него.
 ### *user_microservice*
 
 Сервис, взаимодействующий с сущностями пользователей - `Users`. В сервисе реализована логика для создания пользователя,
-его авторизации, и осуществления рассылки сообщений. https://github.com/Korollayre/bootcamp_final_project/blob/master/library_project/components/user_microservice/docs/http_requests/users_api_requests.http
+его авторизации, и осуществления рассылки сообщений. Пример http запросов - https://github.com/Korollayre/bootcamp_final_project/blob/master/library_project/components/user_microservice/docs/http_requests/users_api_requests.http
 
 ***HTTP API***
 
