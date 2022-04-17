@@ -2,8 +2,6 @@ version: "3"
 services:
   rabbitmq:
     image: rabbitmq:3
-    ports:
-      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: user
       RABBITMQ_DEFAULT_PASS: password
