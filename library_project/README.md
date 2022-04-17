@@ -120,7 +120,7 @@ https://docs.docker.com/engine/install/,  `docker-compose` - https://docs.docker
 
 Для заполнения БД книг необходимо после запуска docker-compose файла ввести в терминале команду:
 
-    docker exec -it deployment_books_api_1 bash -c "books_api init mongodb postgre mysql"
+    docker exec -t deployment_books_api_1 bash -c "books_api init mongodb postgre mysql"
 
 где **mongodb postgre mysql** - это теги, по которым будет осуществляться поиск и добавление книг в бд.
 
